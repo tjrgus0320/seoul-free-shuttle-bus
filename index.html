@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>서울 무료 셔틀버스 노선도</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Malgun Gothic', sans-serif;
+      background: #f5f5f5;
+      min-height: 100vh;
+    }
+
+    header {
+      background: linear-gradient(135deg, #0066cc 0%, #004999 100%);
+      color: white;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+
+    header h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    header p {
+      margin-top: 8px;
+      font-size: 0.9rem;
+      opacity: 0.9;
+    }
+
+    .update-info {
+      margin-top: 5px;
+      font-size: 0.8rem;
+      opacity: 0.7;
+    }
+
+    #tabs {
+      display: flex;
+      flex-wrap: wrap;
+      padding: 15px;
+      gap: 8px;
+      background: white;
+      border-bottom: 1px solid #e0e0e0;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    #tabs button {
+      padding: 8px 16px;
+      border: 2px solid #0066cc;
+      background: white;
+      color: #0066cc;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+
+    #tabs button:hover {
+      background: #e6f0ff;
+    }
+
+    #tabs button.active {
+      background: #0066cc;
+      color: white;
+    }
+
+    .main-container {
+      display: flex;
+      flex-direction: column;
+    }
+
+    @media (min-width: 768px) {
+      .main-container {
+        flex-direction: row;
+        height: calc(100vh - 160px);
+      }
+    }
+
+    #map {
+      height: 50vh;
+      width: 100%;
+    }
+
+    @media (min-width: 768px) {
+      #map {
+        height: 100%;
+        flex: 1;
+      }
+    }
+
+    #info {
+      padding: 20px;
+      background: white;
+      overflow-y: auto;
+    }
+
+    @media (min-width: 768px) {
+      #info {
+        width: 380px;
+        border-left: 1px solid #e0e0e0;
+      }
+    }
+
+    #info h3 {
+      font-size: 1.3rem;
+      color: #333;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #0066cc;
+    }
+
+    .route-card {
+      background: #f8f9fa;
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-left: 4px solid #0066cc;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .route-card:hover {
+      background: #e6f0ff;
+      transform: translateX(5px);
+    }
+
+    .route-card.active {
+      background: #e6f0ff;
+      border-left-color: #ff6b00;
+    }
+
+    .route-card h4 {
+      font-size: 1.1rem;
+      color: #0066cc;
+      margin-bottom: 10px;
+    }
+
+    .route-info {
+      display: flex;
+      gap: 20px;
+      font-size: 0.9rem;
+      color: #666;
+      margin-bottom: 10px;
+    }
+
+    .route-info span {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .stops-list {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px dashed #ddd;
+    }
+
+    .stops-list h5 {
+      font-size: 0.85rem;
+      color: #888;
+      margin-bottom: 8px;
+    }
+
+    .stop-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 0;
+      font-size: 0.9rem;
+      color: #444;
+    }
+
+    .stop-dot {
+      width: 10px;
+      height: 10px;
+      background: #0066cc;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .stop-item:first-child .stop-dot {
+      background: #00cc66;
+    }
+
+    .stop-item:last-child .stop-dot {
+      background: #ff6b00;
+    }
+
+    .loading {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 200px;
+      color: #666;
+    }
+
+    .error-message {
+      background: #ffe6e6;
+      color: #cc0000;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .legend {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      background: white;
+      padding: 10px 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      z-index: 1000;
+      font-size: 0.8rem;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 5px 0;
+    }
+
+    .legend-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .legend-dot.start { background: #00cc66; }
+    .legend-dot.end { background: #ff6b00; }
+    .legend-dot.stop { background: #0066cc; }
+
+    footer {
+      background: #333;
+      color: #aaa;
+      padding: 15px 20px;
+      text-align: center;
+      font-size: 0.8rem;
+    }
+
+    footer a {
+      color: #66b3ff;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🚌 서울 무료 셔틀버스 노선 안내</h1>
+  <p>서울시 자치구별 무료 셔틀버스 운행 정보를 한눈에 확인하세요</p>
+  <div class="update-info" id="updateInfo">데이터 로딩 중...</div>
+</header>
+
+<div id="tabs">
+  <div class="loading">자치구 목록 로딩 중...</div>
+</div>
+
+<div class="main-container">
+  <div id="map"></div>
+  <div id="info">
+    <div class="loading">노선 정보를 불러오는 중...</div>
+  </div>
+</div>
+
+<footer>
+  <p>본 서비스는 서울시 공식 데이터를 기반으로 제작되었습니다.</p>
+  <p style="margin-top: 5px;">문의 및 오류 신고: <a href="#">shuttle@example.com</a></p>
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+// 전역 변수
+let map;
+let layers = [];
+let shuttleData = null;
+let activeDistrict = null;
+let activeRoute = null;
+
+// 색상 팔레트
+const COLORS = [
+  '#0066cc', '#cc3300', '#009933', '#9933cc',
+  '#ff6600', '#0099cc', '#cc0066', '#669900'
+];
+
+// 지도 초기화
+function initMap() {
+  map = L.map('map').setView([37.5665, 126.9780], 11);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map);
+
+  // 범례 추가
+  const legend = L.control({ position: 'bottomleft' });
+  legend.onAdd = function() {
+    const div = L.DomUtil.create('div', 'legend');
+    div.innerHTML = `
+      <div class="legend-item"><div class="legend-dot start"></div> 출발지</div>
+      <div class="legend-item"><div class="legend-dot stop"></div> 정류장</div>
+      <div class="legend-item"><div class="legend-dot end"></div> 종점</div>
+    `;
+    return div;
+  };
+  legend.addTo(map);
+}
+
+// 데이터 로드
+async function loadData() {
+  try {
+    const response = await fetch('shuttle_routes.json');
+    if (!response.ok) throw new Error('데이터 로드 실패');
+
+    shuttleData = await response.json();
+
+    // 업데이트 정보 표시
+    document.getElementById('updateInfo').textContent =
+      `최종 업데이트: ${shuttleData.updated_at} | 출처: ${shuttleData.source}`;
+
+    // 탭 생성
+    renderTabs();
+
+    // 첫 번째 자치구 표시
+    if (shuttleData.districts.length > 0) {
+      showDistrict(shuttleData.districts[0]);
+    }
+  } catch (error) {
+    console.error('데이터 로드 오류:', error);
+    document.getElementById('tabs').innerHTML =
+      '<div class="error-message">데이터를 불러오는데 실패했습니다. 페이지를 새로고침 해주세요.</div>';
+  }
+}
+
+// 탭 렌더링
+function renderTabs() {
+  const tabsContainer = document.getElementById('tabs');
+  tabsContainer.innerHTML = '';
+
+  shuttleData.districts.forEach((district) => {
+    const btn = document.createElement('button');
+    btn.textContent = district.district;
+    btn.onclick = () => showDistrict(district);
+    btn.dataset.district = district.district;
+    tabsContainer.appendChild(btn);
+  });
+}
+
+// 자치구 표시
+function showDistrict(district) {
+  activeDistrict = district;
+  activeRoute = null;
+
+  // 탭 활성화 상태 업데이트
+  document.querySelectorAll('#tabs button').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.district === district.district);
+  });
+
+  // 정보 패널 업데이트
+  renderRouteInfo(district);
+
+  // 지도에 모든 노선 표시
+  showAllRoutesOnMap(district);
+}
+
+// 노선 정보 렌더링
+function renderRouteInfo(district) {
+  const infoContainer = document.getElementById('info');
+
+  let html = `<h3>${district.district} 셔틀버스</h3>`;
+
+  district.routes.forEach((route, idx) => {
+    const isActive = activeRoute === route.name;
+    html += `
+      <div class="route-card ${isActive ? 'active' : ''}"
+           onclick="focusRoute('${district.district}', ${idx})">
+        <h4>${route.name}</h4>
+        <div class="route-info">
+          <span>⏰ ${route.hours}</span>
+          <span>🔄 ${route.interval}</span>
+        </div>
+        <div class="stops-list">
+          <h5>정류장 (${route.stops.length}개)</h5>
+          ${route.stops.map((stop, i) => `
+            <div class="stop-item">
+              <div class="stop-dot"></div>
+              ${stop.name}
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  });
+
+  infoContainer.innerHTML = html;
+}
+
+// 지도에 모든 노선 표시
+function showAllRoutesOnMap(district) {
+  // 기존 레이어 제거
+  layers.forEach(layer => map.removeLayer(layer));
+  layers = [];
+
+  const bounds = L.latLngBounds();
+
+  district.routes.forEach((route, routeIdx) => {
+    const color = COLORS[routeIdx % COLORS.length];
+    const coords = route.stops.map(s => [s.lat, s.lng]);
+
+    // 정류장 마커
+    route.stops.forEach((stop, stopIdx) => {
+      let markerColor = color;
+      let iconSize = [10, 10];
+
+      if (stopIdx === 0) {
+        markerColor = '#00cc66'; // 출발지
+        iconSize = [14, 14];
+      } else if (stopIdx === route.stops.length - 1) {
+        markerColor = '#ff6b00'; // 종점
+        iconSize = [14, 14];
+      }
+
+      const icon = L.divIcon({
+        className: 'custom-marker',
+        html: `<div style="
+          width: ${iconSize[0]}px;
+          height: ${iconSize[1]}px;
+          background: ${markerColor};
+          border-radius: 50%;
+          border: 2px solid white;
+          box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        "></div>`,
+        iconSize: iconSize,
+        iconAnchor: [iconSize[0]/2, iconSize[1]/2]
+      });
+
+      const marker = L.marker([stop.lat, stop.lng], { icon })
+        .addTo(map)
+        .bindPopup(`
+          <strong>${stop.name}</strong><br>
+          <small>${route.name}</small>
+        `);
+
+      layers.push(marker);
+      bounds.extend([stop.lat, stop.lng]);
+    });
+
+    // 노선 라인
+    const polyline = L.polyline(coords, {
+      color: color,
+      weight: 4,
+      opacity: 0.8
+    }).addTo(map);
+
+    layers.push(polyline);
+  });
+
+  // 지도 범위 조정
+  if (bounds.isValid()) {
+    map.fitBounds(bounds, { padding: [50, 50] });
+  }
+}
+
+// 특정 노선 포커스
+function focusRoute(districtName, routeIdx) {
+  const district = shuttleData.districts.find(d => d.district === districtName);
+  if (!district) return;
+
+  const route = district.routes[routeIdx];
+  activeRoute = route.name;
+
+  // 카드 활성화 상태 업데이트
+  document.querySelectorAll('.route-card').forEach((card, idx) => {
+    card.classList.toggle('active', idx === routeIdx);
+  });
+
+  // 해당 노선으로 지도 이동
+  const coords = route.stops.map(s => [s.lat, s.lng]);
+  const bounds = L.latLngBounds(coords);
+  map.fitBounds(bounds, { padding: [80, 80] });
+}
+
+// 초기화
+document.addEventListener('DOMContentLoaded', () => {
+  initMap();
+  loadData();
+});
+</script>
+
+</body>
+</html>
