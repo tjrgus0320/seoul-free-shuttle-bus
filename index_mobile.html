@@ -3,244 +3,1005 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="theme-color" content="#0066cc">
-  <meta name="description" content="서울시 자치구별 무료 셔틀버스 노선 안내">
+  <meta name="theme-color" content="#2563eb">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <title>서울 무료 셔틀버스 노선도</title>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>서울 무료 셔틀버스</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-    html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;background:#f5f5f5;min-height:100vh;overscroll-behavior:none}
-    header{background:linear-gradient(135deg,#0066cc 0%,#004999 100%);color:white;padding:16px;padding-top:max(16px,env(safe-area-inset-top));box-shadow:0 2px 10px rgba(0,0,0,0.2);position:relative;z-index:100}
-    header h1{font-size:1.25rem;font-weight:600;display:flex;align-items:center;gap:8px}
-    header p{margin-top:6px;font-size:0.8rem;opacity:0.9}
-    .update-info{margin-top:4px;font-size:0.7rem;opacity:0.7}
-    #tabs{display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch;scroll-snap-type:x mandatory;padding:12px;gap:8px;background:white;border-bottom:1px solid #e0e0e0;position:sticky;top:0;z-index:1000;scrollbar-width:none}
-    #tabs::-webkit-scrollbar{display:none}
-    #tabs button{flex-shrink:0;padding:10px 18px;border:2px solid #0066cc;background:white;color:#0066cc;border-radius:25px;cursor:pointer;font-size:0.9rem;font-weight:500;transition:all 0.2s ease;scroll-snap-align:start;min-height:44px}
-    #tabs button:active{transform:scale(0.95)}
-    #tabs button.active{background:#0066cc;color:white;box-shadow:0 2px 8px rgba(0,102,204,0.4)}
-    .main-container{display:flex;flex-direction:column;height:calc(100vh - 120px);height:calc(100dvh - 120px)}
-    #map{flex:1;min-height:40vh;width:100%;z-index:1;position:relative}
-    #info-panel{background:white;border-radius:20px 20px 0 0;box-shadow:0 -4px 20px rgba(0,0,0,0.15);position:relative;z-index:10;max-height:45vh;overflow:hidden;transition:max-height 0.3s ease}
-    #info-panel.expanded{max-height:70vh}
-    .panel-handle{width:40px;height:4px;background:#ddd;border-radius:2px;margin:12px auto 8px;cursor:grab}
-    #info{padding:0 16px 16px;overflow-y:auto;max-height:calc(45vh - 30px);-webkit-overflow-scrolling:touch}
-    #info-panel.expanded #info{max-height:calc(70vh - 30px)}
-    #info h3{font-size:1.2rem;color:#333;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #0066cc;position:sticky;top:0;background:white}
-    .route-card{background:#f8f9fa;border-radius:12px;padding:14px;margin-bottom:12px;border-left:4px solid #0066cc;cursor:pointer;transition:all 0.2s ease;-webkit-user-select:none;user-select:none}
-    .route-card:active{transform:scale(0.98);background:#e6f0ff}
-    .route-card.active{background:#e6f0ff;border-left-color:#ff6b00}
-    .route-card h4{font-size:1rem;color:#0066cc;margin-bottom:8px}
-    .route-info{display:flex;flex-wrap:wrap;gap:12px;font-size:0.85rem;color:#666;margin-bottom:8px}
-    .route-info span{display:flex;align-items:center;gap:4px}
-    .stops-toggle{display:flex;align-items:center;justify-content:space-between;padding:8px 0;font-size:0.85rem;color:#666;border-top:1px dashed #ddd;margin-top:8px}
-    .stops-toggle-btn{background:none;border:none;color:#0066cc;font-size:0.85rem;cursor:pointer;padding:4px 8px;min-height:32px}
-    .stops-list{display:none;padding-top:8px}
-    .stops-list.show{display:block}
-    .stop-item{display:flex;align-items:center;gap:8px;padding:6px 0;font-size:0.85rem;color:#444}
-    .stop-dot{width:10px;height:10px;background:#0066cc;border-radius:50%;flex-shrink:0}
-    .stop-item:first-child .stop-dot{background:#00cc66}
-    .stop-item:last-child .stop-dot{background:#ff6b00}
-    .loading{display:flex;flex-direction:column;justify-content:center;align-items:center;padding:40px;color:#666;gap:12px}
-    .loading-spinner{width:32px;height:32px;border:3px solid #e0e0e0;border-top-color:#0066cc;border-radius:50%;animation:spin 1s linear infinite}
-    @keyframes spin{to{transform:rotate(360deg)}}
-    .error-message{background:#ffe6e6;color:#cc0000;padding:20px;border-radius:12px;text-align:center;margin:16px}
-    .locate-btn{position:absolute;bottom:20px;right:20px;width:48px;height:48px;background:white;border:none;border-radius:50%;box-shadow:0 2px 10px rgba(0,0,0,0.2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.5rem;z-index:1000;transition:transform 0.2s}
-    .locate-btn:active{transform:scale(0.9)}
-    .legend{position:absolute;bottom:80px;left:12px;background:white;padding:10px 14px;border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,0.15);z-index:1000;font-size:0.75rem}
-    .legend-item{display:flex;align-items:center;gap:8px;margin:4px 0}
-    .legend-dot{width:10px;height:10px;border-radius:50%}
-    .legend-dot.start{background:#00cc66}
-    .legend-dot.end{background:#ff6b00}
-    .legend-dot.stop{background:#0066cc}
-    footer{background:#333;color:#aaa;padding:16px;padding-bottom:max(16px,env(safe-area-inset-bottom));text-align:center;font-size:0.75rem}
-    footer a{color:#66b3ff;text-decoration:none}
-    @media(min-width:768px){header h1{font-size:1.5rem}header p{font-size:0.9rem}.main-container{flex-direction:row;height:calc(100vh - 140px)}#map{flex:1;min-height:auto}#info-panel{width:400px;max-height:100%;border-radius:0;box-shadow:-4px 0 20px rgba(0,0,0,0.1)}#info-panel.expanded{max-height:100%}.panel-handle{display:none}#info{max-height:calc(100vh - 200px);padding:20px}#info-panel.expanded #info{max-height:calc(100vh - 200px)}.route-card{padding:16px}.route-card:hover{background:#e6f0ff;transform:translateX(4px)}.stops-list{display:block}.stops-toggle-btn{display:none}}
-    @media(prefers-color-scheme:dark){body{background:#1a1a1a}header{background:linear-gradient(135deg,#004999 0%,#003366 100%)}#tabs{background:#2a2a2a;border-color:#444}#tabs button{background:#2a2a2a;border-color:#4a90cc;color:#4a90cc}#tabs button.active{background:#4a90cc;color:white}#info-panel{background:#2a2a2a}#info h3{color:#fff;background:#2a2a2a}.route-card{background:#333}.route-card h4{color:#4a90cc}.route-info{color:#aaa}.stop-item{color:#ccc}.legend{background:#2a2a2a;color:#ccc}.locate-btn{background:#2a2a2a;color:#fff}}
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --primary-light: #3b82f6;
+      --accent: #f97316;
+      --success: #10b981;
+      --bg-primary: #ffffff;
+      --bg-secondary: #f8fafc;
+      --bg-tertiary: #f1f5f9;
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #94a3b8;
+      --border: #e2e8f0;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+      --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
+      --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.15);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 24px;
+      --radius-full: 9999px;
+      --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    [data-theme="dark"] {
+      --primary: #3b82f6;
+      --primary-dark: #2563eb;
+      --primary-light: #60a5fa;
+      --bg-primary: #0f172a;
+      --bg-secondary: #1e293b;
+      --bg-tertiary: #334155;
+      --text-primary: #f1f5f9;
+      --text-secondary: #cbd5e1;
+      --text-muted: #64748b;
+      --border: #334155;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      line-height: 1.5;
+    }
+
+    /* App Container */
+    .app {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* Map Container */
+    #map {
+      flex: 1;
+      width: 100%;
+      z-index: 1;
+    }
+
+    /* Floating Header */
+    .floating-header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      padding: 12px 16px;
+      padding-top: calc(12px + env(safe-area-inset-top, 0px));
+      background: linear-gradient(to bottom, rgba(255,255,255,0.95), rgba(255,255,255,0));
+      pointer-events: none;
+    }
+
+    [data-theme="dark"] .floating-header {
+      background: linear-gradient(to bottom, rgba(15,23,42,0.95), rgba(15,23,42,0));
+    }
+
+    .header-card {
+      background: var(--bg-primary);
+      border-radius: var(--radius-lg);
+      padding: 14px 18px;
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      pointer-events: auto;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .header-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .header-subtitle {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .icon-btn {
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--border);
+      background: var(--bg-primary);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .icon-btn:active {
+      transform: scale(0.95);
+      background: var(--bg-tertiary);
+    }
+
+    /* Floating Stats */
+    .floating-stats {
+      position: absolute;
+      top: calc(90px + env(safe-area-inset-top, 0px));
+      right: 16px;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .stat-pill {
+      background: var(--bg-primary);
+      border-radius: var(--radius-full);
+      padding: 8px 14px;
+      box-shadow: var(--shadow-md);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .stat-pill .value {
+      color: var(--primary);
+    }
+
+    .stat-pill .label {
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    /* Locate Button */
+    .locate-btn {
+      position: absolute;
+      bottom: calc(320px + var(--safe-bottom));
+      right: 16px;
+      z-index: 1000;
+      width: 50px;
+      height: 50px;
+      background: var(--bg-primary);
+      border: none;
+      border-radius: var(--radius-full);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .locate-btn:active {
+      transform: scale(0.95);
+      background: var(--primary);
+    }
+
+    .locate-btn.active {
+      background: var(--primary);
+      color: white;
+    }
+
+    /* Bottom Sheet */
+    .bottom-sheet {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 1001;
+      background: var(--bg-primary);
+      border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+      box-shadow: 0 -10px 40px rgba(0,0,0,0.15);
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      max-height: 70vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .bottom-sheet.collapsed {
+      transform: translateY(calc(100% - 180px - var(--safe-bottom)));
+    }
+
+    .bottom-sheet.expanded {
+      transform: translateY(0);
+    }
+
+    .sheet-handle {
+      padding: 12px;
+      display: flex;
+      justify-content: center;
+      cursor: grab;
+    }
+
+    .handle-bar {
+      width: 40px;
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+    }
+
+    /* District Pills */
+    .district-section {
+      padding: 0 16px 12px;
+    }
+
+    .section-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 10px;
+    }
+
+    .district-scroll {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+
+    .district-scroll::-webkit-scrollbar {
+      display: none;
+    }
+
+    .district-pill {
+      flex-shrink: 0;
+      padding: 10px 18px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+
+    .district-pill:active {
+      transform: scale(0.97);
+    }
+
+    .district-pill.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    /* Route List */
+    .route-section {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0 16px;
+      padding-bottom: calc(16px + var(--safe-bottom));
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .route-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 12px;
+    }
+
+    .route-header-icon {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .route-header-text h2 {
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    .route-header-text p {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* Route Card */
+    .route-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 14px;
+      margin-bottom: 10px;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .route-card::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: var(--primary);
+      border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+      opacity: 0;
+      transition: var(--transition);
+    }
+
+    .route-card.active {
+      border-color: var(--primary);
+      background: rgba(37, 99, 235, 0.05);
+    }
+
+    .route-card.active::before {
+      opacity: 1;
+    }
+
+    .route-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+
+    .route-name {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.3;
+      flex: 1;
+      padding-right: 10px;
+    }
+
+    .route-badge {
+      font-size: 0.65rem;
+      font-weight: 600;
+      padding: 4px 8px;
+      background: var(--primary);
+      color: white;
+      border-radius: var(--radius-sm);
+      white-space: nowrap;
+    }
+
+    .route-meta {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .meta-tag {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+
+    /* Stop Timeline */
+    .stop-timeline {
+      background: var(--bg-primary);
+      border-radius: var(--radius-md);
+      padding: 12px;
+    }
+
+    .timeline-label {
+      font-size: 0.65rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 10px;
+    }
+
+    .stop-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 5px 0;
+      position: relative;
+    }
+
+    .stop-row:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      left: 6px;
+      top: 20px;
+      bottom: -10px;
+      width: 2px;
+      background: var(--border);
+    }
+
+    .stop-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--primary);
+      border: 3px solid var(--bg-primary);
+      box-shadow: 0 0 0 2px var(--primary);
+      flex-shrink: 0;
+      z-index: 1;
+    }
+
+    .stop-row:first-child .stop-dot {
+      background: var(--success);
+      box-shadow: 0 0 0 2px var(--success);
+    }
+
+    .stop-row:last-child .stop-dot {
+      background: var(--accent);
+      box-shadow: 0 0 0 2px var(--accent);
+    }
+
+    .stop-text {
+      font-size: 0.8rem;
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    /* Map Legend */
+    .map-legend {
+      position: absolute;
+      bottom: calc(330px + var(--safe-bottom));
+      left: 16px;
+      z-index: 1000;
+      background: var(--bg-primary);
+      border-radius: var(--radius-md);
+      padding: 10px 14px;
+      box-shadow: var(--shadow-md);
+      display: flex;
+      gap: 12px;
+      font-size: 0.7rem;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      color: var(--text-secondary);
+    }
+
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .legend-dot.start { background: var(--success); }
+    .legend-dot.via { background: var(--primary); }
+    .legend-dot.end { background: var(--accent); }
+
+    /* Loading */
+    .loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+      color: var(--text-muted);
+    }
+
+    .spinner {
+      width: 32px;
+      height: 32px;
+      border: 3px solid var(--border);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 12px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Leaflet Custom */
+    .leaflet-control-zoom {
+      display: none !important;
+    }
+
+    .leaflet-popup-content-wrapper {
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .leaflet-popup-content {
+      margin: 10px 12px;
+      font-family: 'Pretendard', sans-serif;
+    }
+
+    .popup-title {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--text-primary);
+    }
+
+    .popup-route {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
   </style>
 </head>
 <body>
-<header>
-  <h1>🚌 서울 무료 셔틀버스</h1>
-  <p>서울시 자치구별 무료 셔틀버스 운행 정보</p>
-  <div class="update-info" id="updateInfo">데이터 로딩 중...</div>
-</header>
-<div id="tabs"><div class="loading"><div class="loading-spinner"></div></div></div>
-<div class="main-container">
-  <div id="map"><button class="locate-btn" onclick="locateUser()" title="현재 위치">📍</button></div>
-  <div id="info-panel">
-    <div class="panel-handle" id="panelHandle"></div>
-    <div id="info"><div class="loading"><div class="loading-spinner"></div><span>노선 정보 로딩 중...</span></div></div>
+
+<div class="app">
+  <div id="map"></div>
+
+  <!-- Floating Header -->
+  <div class="floating-header">
+    <div class="header-card">
+      <div class="header-left">
+        <div class="logo-icon">🚌</div>
+        <div>
+          <div class="header-title">서울 무료 셔틀버스</div>
+          <div class="header-subtitle">비상 수송 대책 노선 안내</div>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="icon-btn" onclick="toggleTheme()">🌙</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Stats -->
+  <div class="floating-stats">
+    <div class="stat-pill">
+      <span class="value" id="totalBuses">677</span>
+      <span class="label">버스</span>
+    </div>
+    <div class="stat-pill">
+      <span class="value" id="totalRoutes">100+</span>
+      <span class="label">노선</span>
+    </div>
+  </div>
+
+  <!-- Map Legend -->
+  <div class="map-legend">
+    <div class="legend-item">
+      <span class="legend-dot start"></span>
+      <span>출발</span>
+    </div>
+    <div class="legend-item">
+      <span class="legend-dot via"></span>
+      <span>경유</span>
+    </div>
+    <div class="legend-item">
+      <span class="legend-dot end"></span>
+      <span>종점</span>
+    </div>
+  </div>
+
+  <!-- Locate Button -->
+  <button class="locate-btn" onclick="locateMe()" id="locateBtn">📍</button>
+
+  <!-- Bottom Sheet -->
+  <div class="bottom-sheet collapsed" id="bottomSheet">
+    <div class="sheet-handle" onclick="toggleSheet()">
+      <div class="handle-bar"></div>
+    </div>
+
+    <div class="district-section">
+      <div class="section-label">자치구 선택</div>
+      <div class="district-scroll" id="districtScroll">
+        <div class="loading">
+          <div class="spinner"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="route-section" id="routeSection">
+      <div class="loading">
+        <div class="spinner"></div>
+        <span>노선 정보 로딩 중...</span>
+      </div>
+    </div>
   </div>
 </div>
-<footer>
-  <p>서울시 공식 데이터 기반 | 비영리 공익 서비스</p>
-  <p style="margin-top:8px;"><a href="https://github.com/user/seoul-shuttle-bus" target="_blank">GitHub</a> | <a href="mailto:shuttle@example.com">오류 신고</a></p>
-</footer>
+
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-let map,layers=[],shuttleData=null,activeDistrict=null,activeRoute=null,userMarker=null;
-const COLORS=['#0066cc','#cc3300','#009933','#9933cc','#ff6600','#0099cc','#cc0066','#669900'];
+// Global State
+let map;
+let layers = [];
+let shuttleData = null;
+let activeDistrict = null;
+let activeRoute = null;
+let userMarker = null;
+let sheetExpanded = false;
 
-function initMap(){
-  map=L.map('map',{zoomControl:false,attributionControl:false}).setView([37.5665,126.9780],11);
-  L.control.zoom({position:'topright'}).addTo(map);
-  L.control.attribution({position:'bottomright'}).addAttribution('OpenStreetMap').addTo(map);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-  const legend=L.control({position:'bottomleft'});
-  legend.onAdd=function(){
-    const div=L.DomUtil.create('div','legend');
-    div.innerHTML='<div class="legend-item"><div class="legend-dot start"></div> 출발</div><div class="legend-item"><div class="legend-dot stop"></div> 정류장</div><div class="legend-item"><div class="legend-dot end"></div> 종점</div>';
-    return div;
-  };
-  legend.addTo(map);
-}
+// Colors
+const COLORS = [
+  '#2563eb', '#dc2626', '#059669', '#7c3aed',
+  '#ea580c', '#0891b2', '#c026d3', '#65a30d'
+];
 
-function locateUser(){
-  if(!navigator.geolocation)return alert('위치 서비스를 지원하지 않습니다.');
-  navigator.geolocation.getCurrentPosition((pos)=>{
-    const{latitude,longitude}=pos.coords;
-    if(userMarker)map.removeLayer(userMarker);
-    userMarker=L.circleMarker([latitude,longitude],{radius:10,fillColor:'#4285f4',fillOpacity:1,color:'white',weight:3}).addTo(map).bindPopup('현재 위치');
-    map.setView([latitude,longitude],14);
-    findNearestDistrict(latitude,longitude);
-  },()=>alert('위치를 가져올 수 없습니다.'),{enableHighAccuracy:true,timeout:10000});
-}
+// Theme Toggle
+function toggleTheme() {
+  const body = document.body;
+  const btn = document.querySelector('.icon-btn');
 
-function findNearestDistrict(lat,lng){
-  if(!shuttleData)return;
-  let nearest=null,minDist=Infinity;
-  shuttleData.districts.forEach(district=>{
-    district.routes.forEach(route=>{
-      route.stops.forEach(stop=>{
-        const dist=Math.sqrt(Math.pow(stop.lat-lat,2)+Math.pow(stop.lng-lng,2));
-        if(dist<minDist){minDist=dist;nearest=district;}
-      });
-    });
-  });
-  if(nearest)showDistrict(nearest);
-}
-
-async function loadData(){
-  try{
-    const response=await fetch('shuttle_routes.json');
-    if(!response.ok)throw new Error('데이터 로드 실패');
-    shuttleData=await response.json();
-    document.getElementById('updateInfo').textContent='업데이트: '+shuttleData.updated_at;
-    renderTabs();
-    if(shuttleData.districts.length>0)showDistrict(shuttleData.districts[0]);
-  }catch(error){
-    document.getElementById('tabs').innerHTML='<div class="error-message">데이터 로드 실패. 새로고침 해주세요.</div>';
-    document.getElementById('info').innerHTML='<div class="error-message">데이터 로드 실패</div>';
+  if (body.dataset.theme === 'dark') {
+    body.dataset.theme = 'light';
+    btn.textContent = '🌙';
+  } else {
+    body.dataset.theme = 'dark';
+    btn.textContent = '☀️';
   }
 }
 
-function renderTabs(){
-  const tabsContainer=document.getElementById('tabs');
-  tabsContainer.innerHTML='';
-  shuttleData.districts.forEach((district)=>{
-    const btn=document.createElement('button');
-    btn.textContent=district.district;
-    btn.onclick=()=>showDistrict(district);
-    btn.dataset.district=district.district;
-    tabsContainer.appendChild(btn);
-  });
+// Toggle Sheet
+function toggleSheet() {
+  const sheet = document.getElementById('bottomSheet');
+  sheetExpanded = !sheetExpanded;
+  sheet.classList.toggle('collapsed', !sheetExpanded);
+  sheet.classList.toggle('expanded', sheetExpanded);
 }
 
-function showDistrict(district){
-  activeDistrict=district;
-  activeRoute=null;
-  document.querySelectorAll('#tabs button').forEach(btn=>{
-    btn.classList.toggle('active',btn.dataset.district===district.district);
-    if(btn.dataset.district===district.district)btn.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
-  });
-  renderRouteInfo(district);
-  showAllRoutesOnMap(district);
+// Initialize Map
+function initMap() {
+  map = L.map('map', {
+    zoomControl: false,
+    attributionControl: false
+  }).setView([37.5665, 126.9780], 11);
+
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    maxZoom: 19
+  }).addTo(map);
+
+  // Touch handling for bottom sheet
+  let startY = 0;
+  const sheet = document.getElementById('bottomSheet');
+
+  sheet.addEventListener('touchstart', (e) => {
+    if (e.target.closest('.route-section') && sheetExpanded) return;
+    startY = e.touches[0].clientY;
+  }, { passive: true });
+
+  sheet.addEventListener('touchmove', (e) => {
+    if (e.target.closest('.route-section') && sheetExpanded) return;
+    const deltaY = e.touches[0].clientY - startY;
+
+    if (deltaY > 50 && sheetExpanded) {
+      toggleSheet();
+    } else if (deltaY < -50 && !sheetExpanded) {
+      toggleSheet();
+    }
+  }, { passive: true });
 }
 
-function renderRouteInfo(district){
-  const infoContainer=document.getElementById('info');
-  let html='<h3>'+district.district+'</h3>';
-  district.routes.forEach((route,idx)=>{
-    const isActive=activeRoute===route.name;
-    const stopsId='stops-'+idx;
-    html+='<div class="route-card '+(isActive?'active':'')+'" onclick="focusRoute(\''+district.district+'\','+idx+')">';
-    html+='<h4>'+route.name+'</h4>';
-    html+='<div class="route-info"><span>⏰ '+(route.hours||'정보 없음')+'</span><span>🔄 '+(route.interval||'정보 없음')+'</span></div>';
-    html+='<div class="stops-toggle"><span>정류장 '+route.stops.length+'개</span>';
-    html+='<button class="stops-toggle-btn" onclick="event.stopPropagation();toggleStops(\''+stopsId+'\')">펼치기 ▼</button></div>';
-    html+='<div class="stops-list" id="'+stopsId+'">';
-    route.stops.forEach(stop=>{html+='<div class="stop-item"><div class="stop-dot"></div>'+stop.name+'</div>';});
-    html+='</div></div>';
-  });
-  infoContainer.innerHTML=html;
-}
+// Load Data
+async function loadData() {
+  try {
+    const response = await fetch('shuttle_routes.json');
+    if (!response.ok) throw new Error('데이터 로드 실패');
 
-function toggleStops(stopsId){
-  const stopsList=document.getElementById(stopsId);
-  const btn=stopsList.previousElementSibling.querySelector('.stops-toggle-btn');
-  if(stopsList.classList.contains('show')){
-    stopsList.classList.remove('show');
-    btn.textContent='펼치기 ▼';
-  }else{
-    stopsList.classList.add('show');
-    btn.textContent='접기 ▲';
+    shuttleData = await response.json();
+
+    // Update stats
+    if (shuttleData.total_buses) {
+      document.getElementById('totalBuses').textContent = shuttleData.total_buses;
+    }
+
+    let totalRoutes = 0;
+    shuttleData.districts.forEach(d => totalRoutes += d.routes.length);
+    document.getElementById('totalRoutes').textContent = totalRoutes;
+
+    // Render districts
+    renderDistricts();
+
+    // Show first district
+    if (shuttleData.districts.length > 0) {
+      showDistrict(shuttleData.districts[0]);
+    }
+  } catch (error) {
+    console.error('데이터 로드 오류:', error);
+    document.getElementById('routeSection').innerHTML =
+      '<div class="loading" style="color: #ef4444;">데이터 로드 실패</div>';
   }
 }
 
-function showAllRoutesOnMap(district){
-  layers.forEach(layer=>map.removeLayer(layer));
-  layers=[];
-  const bounds=L.latLngBounds();
-  district.routes.forEach((route,routeIdx)=>{
-    const color=COLORS[routeIdx%COLORS.length];
-    const coords=route.stops.map(s=>[s.lat,s.lng]);
-    route.stops.forEach((stop,stopIdx)=>{
-      let markerColor=color,iconSize=[10,10];
-      if(stopIdx===0){markerColor='#00cc66';iconSize=[14,14];}
-      else if(stopIdx===route.stops.length-1){markerColor='#ff6b00';iconSize=[14,14];}
-      const icon=L.divIcon({
-        className:'custom-marker',
-        html:'<div style="width:'+iconSize[0]+'px;height:'+iconSize[1]+'px;background:'+markerColor+';border-radius:50%;border:2px solid white;box-shadow:0 2px 5px rgba(0,0,0,0.3);"></div>',
-        iconSize:iconSize,
-        iconAnchor:[iconSize[0]/2,iconSize[1]/2]
+// Render Districts
+function renderDistricts() {
+  const container = document.getElementById('districtScroll');
+  container.innerHTML = '';
+
+  shuttleData.districts.forEach(district => {
+    const pill = document.createElement('button');
+    pill.className = 'district-pill';
+    pill.textContent = district.district;
+    pill.onclick = () => showDistrict(district);
+    pill.dataset.district = district.district;
+    container.appendChild(pill);
+  });
+}
+
+// Show District
+function showDistrict(district) {
+  activeDistrict = district;
+  activeRoute = null;
+
+  // Update pill states
+  document.querySelectorAll('.district-pill').forEach(pill => {
+    pill.classList.toggle('active', pill.dataset.district === district.district);
+  });
+
+  // Scroll active pill into view
+  const activePill = document.querySelector('.district-pill.active');
+  if (activePill) {
+    activePill.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+  }
+
+  // Render routes
+  renderRoutes(district);
+
+  // Show on map
+  showRoutesOnMap(district);
+}
+
+// Render Routes
+function renderRoutes(district) {
+  const container = document.getElementById('routeSection');
+
+  let html = `
+    <div class="route-header">
+      <div class="route-header-icon">🚏</div>
+      <div class="route-header-text">
+        <h2>${district.district}</h2>
+        <p>${district.routes.length}개 노선 · ${district.bus_count || '다수'}대 운행</p>
+      </div>
+    </div>
+  `;
+
+  district.routes.forEach((route, idx) => {
+    html += `
+      <div class="route-card" onclick="focusRoute('${district.district}', ${idx})" data-route="${idx}">
+        <div class="route-top">
+          <div class="route-name">${route.name}</div>
+          <div class="route-badge">${route.stops.length}개</div>
+        </div>
+        <div class="route-meta">
+          <div class="meta-tag">🕐 ${route.hours}</div>
+          <div class="meta-tag">🔄 ${route.interval}</div>
+        </div>
+        <div class="stop-timeline">
+          <div class="timeline-label">정류장</div>
+          ${route.stops.map(stop => `
+            <div class="stop-row">
+              <div class="stop-dot"></div>
+              <div class="stop-text">${stop.name}</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  });
+
+  container.innerHTML = html;
+}
+
+// Show Routes on Map
+function showRoutesOnMap(district) {
+  // Clear layers
+  layers.forEach(layer => map.removeLayer(layer));
+  layers = [];
+
+  const bounds = L.latLngBounds();
+
+  district.routes.forEach((route, routeIdx) => {
+    const color = COLORS[routeIdx % COLORS.length];
+    const coords = route.stops.map(s => [s.lat, s.lng]);
+
+    // Markers
+    route.stops.forEach((stop, stopIdx) => {
+      let markerColor = color;
+      let size = 12;
+
+      if (stopIdx === 0) {
+        markerColor = '#10b981';
+        size = 14;
+      } else if (stopIdx === route.stops.length - 1) {
+        markerColor = '#f97316';
+        size = 14;
+      }
+
+      const icon = L.divIcon({
+        className: 'custom-marker',
+        html: `<div style="
+          width: ${size}px;
+          height: ${size}px;
+          background: ${markerColor};
+          border-radius: 50%;
+          border: 2px solid white;
+          box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        "></div>`,
+        iconSize: [size, size],
+        iconAnchor: [size/2, size/2]
       });
-      const marker=L.marker([stop.lat,stop.lng],{icon}).addTo(map).bindPopup('<b>'+stop.name+'</b><br><small>'+route.name+'</small>');
+
+      const marker = L.marker([stop.lat, stop.lng], { icon })
+        .addTo(map)
+        .bindPopup(`
+          <div class="popup-title">${stop.name}</div>
+          <div class="popup-route">${route.name}</div>
+        `);
+
       layers.push(marker);
-      bounds.extend([stop.lat,stop.lng]);
+      bounds.extend([stop.lat, stop.lng]);
     });
-    const polyline=L.polyline(coords,{color:color,weight:4,opacity:0.8}).addTo(map);
+
+    // Route line
+    const polyline = L.polyline(coords, {
+      color: color,
+      weight: 4,
+      opacity: 0.8
+    }).addTo(map);
+
     layers.push(polyline);
   });
-  if(bounds.isValid())map.fitBounds(bounds,{padding:[40,40]});
+
+  if (bounds.isValid()) {
+    map.fitBounds(bounds, { padding: [60, 60] });
+  }
 }
 
-function focusRoute(districtName,routeIdx){
-  const district=shuttleData.districts.find(d=>d.district===districtName);
-  if(!district)return;
-  const route=district.routes[routeIdx];
-  activeRoute=route.name;
-  document.querySelectorAll('.route-card').forEach((card,idx)=>card.classList.toggle('active',idx===routeIdx));
-  const coords=route.stops.map(s=>[s.lat,s.lng]);
-  map.fitBounds(L.latLngBounds(coords),{padding:[60,60]});
-}
+// Focus Route
+function focusRoute(districtName, routeIdx) {
+  const district = shuttleData.districts.find(d => d.district === districtName);
+  if (!district) return;
 
-function initPanelSwipe(){
-  const panel=document.getElementById('info-panel');
-  const handle=document.getElementById('panelHandle');
-  let startY=0;
-  handle.addEventListener('touchstart',(e)=>{startY=e.touches[0].clientY;});
-  handle.addEventListener('touchmove',(e)=>{
-    const deltaY=startY-e.touches[0].clientY;
-    if(deltaY>50)panel.classList.add('expanded');
-    else if(deltaY<-50)panel.classList.remove('expanded');
+  const route = district.routes[routeIdx];
+  activeRoute = routeIdx;
+
+  // Update card states
+  document.querySelectorAll('.route-card').forEach((card, idx) => {
+    card.classList.toggle('active', idx === routeIdx);
   });
-  handle.addEventListener('click',()=>panel.classList.toggle('expanded'));
+
+  // Fit to route
+  const coords = route.stops.map(s => [s.lat, s.lng]);
+  const bounds = L.latLngBounds(coords);
+  map.fitBounds(bounds, { padding: [80, 80] });
+
+  // Collapse sheet for better map view
+  if (sheetExpanded) {
+    toggleSheet();
+  }
 }
 
-document.addEventListener('DOMContentLoaded',()=>{initMap();loadData();initPanelSwipe();});
-window.addEventListener('resize',()=>setTimeout(()=>map.invalidateSize(),100));
+// Locate Me
+function locateMe() {
+  const btn = document.getElementById('locateBtn');
+
+  if (!navigator.geolocation) {
+    alert('이 브라우저는 위치 서비스를 지원하지 않습니다.');
+    return;
+  }
+
+  btn.classList.add('active');
+
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      const { latitude, longitude } = position.coords;
+
+      if (userMarker) {
+        map.removeLayer(userMarker);
+      }
+
+      const icon = L.divIcon({
+        className: 'user-marker',
+        html: `<div style="
+          width: 20px;
+          height: 20px;
+          background: var(--primary);
+          border-radius: 50%;
+          border: 4px solid white;
+          box-shadow: 0 0 0 2px var(--primary), 0 4px 12px rgba(37,99,235,0.4);
+        "></div>`,
+        iconSize: [20, 20],
+        iconAnchor: [10, 10]
+      });
+
+      userMarker = L.marker([latitude, longitude], { icon }).addTo(map);
+      map.setView([latitude, longitude], 15);
+
+      // Find nearest district
+      findNearestDistrict(latitude, longitude);
+
+      setTimeout(() => btn.classList.remove('active'), 1000);
+    },
+    (error) => {
+      alert('위치를 가져올 수 없습니다.');
+      btn.classList.remove('active');
+    },
+    { enableHighAccuracy: true }
+  );
+}
+
+// Find Nearest District
+function findNearestDistrict(lat, lng) {
+  if (!shuttleData) return;
+
+  let nearest = null;
+  let minDist = Infinity;
+
+  shuttleData.districts.forEach(district => {
+    district.routes.forEach(route => {
+      route.stops.forEach(stop => {
+        const dist = Math.sqrt(
+          Math.pow(stop.lat - lat, 2) +
+          Math.pow(stop.lng - lng, 2)
+        );
+        if (dist < minDist) {
+          minDist = dist;
+          nearest = district;
+        }
+      });
+    });
+  });
+
+  if (nearest && nearest !== activeDistrict) {
+    showDistrict(nearest);
+  }
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+  initMap();
+  loadData();
+});
 </script>
+
 </body>
 </html>
