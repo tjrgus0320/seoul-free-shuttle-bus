@@ -1,0 +1,691 @@
+{
+  "main_results": [
+    {
+      "source": {
+        "name": "서울시 비상수송대책",
+        "url": "https://news.seoul.go.kr/traffic/archives/514068",
+        "type": "main"
+      },
+      "district_links": [
+        {
+          "district": "종로구",
+          "text": "종로구 무료 셔틀버스 운행계획(1.14. 업데이트)",
+          "url": "https://news.seoul.go.kr/traffic/files/2026/01/696755383c4c38.76782245.pdf",
+          "type": "district_link"
+        },
+        {
+          "district": "중구",
+          "text": "중구 무료 셔틀버스 운행계획(1.14. 업데이트)",
+          "url": "https://news.seoul.go.kr/traffic/files/2026/01/696740bd9f2463.83357516.pdf",
+          "type": "district_link"
+        },
+        {
+          "district": "용산구",
+          "text": "용산구 무료 셔틀버스 운행계획",
+          "url": "https://news.seoul.go.kr/traffic/files/2025/04/6960b81c9eb072.32497220.pdf",
+          "type": "district_link"
+        },
+        {
+          "district": "성동구",
+          "text": "성동구 무료 셔틀버스 운행계획",
+          "url": "https://news.seoul.go.kr/traffic/files/2025/04/6960bb6e452264.96785651.pdf",
+          "type": "district_link"
+        },
+        {
+          "district": "광진구",
+          "text": "광진구 무료 셔틀버스 운행계획",
+          "url": "https://news.seoul.go.kr/traffic/files/2025/04/6960bb7a2b8265.39406629.pdf",
+          "type": "district_link"
+        },
+        {
+          "district": "동대문구",
+          "text": "동대문구 무료 셔틀버스 운행계획(1.14. 업데이트)",
+          "url": "https://news.seoul.go.kr/traffic/files/2026/01/6967551e45f2b0.41344070.pdf",
+          "type": "district_link"
+        },
+        {
+          "district": "중랑구",
+          "text": "중랑구 무료 셔틀버스 운행계획",
+          "url": "https://news.seoul.go.kr/traffic/files/2025/04/6960bc2c228be2.14808062.pdf",
+          "type": "district_link"
+        },
+        {
+          "district": "성북구",
+          "text": "📢(노선추가)시내버스 파업대비 성북구 무료셔.. : 네이버블로그",
+          "url": "https://blog.naver.com/storysb/224143289508",
+          "type": "district_link"
+        },
+        {
+          "district": "강북구",
+          "text": "강북구 무료 셔틀버스 운행계획",
+          "url": "https://news.seoul.go.kr/traffic/files/2025/04/6960bc56817785.51991881.pdf",
+          "type": "district_link"
+        },
+        {
+          "district": "도봉구",
+          "text": "도봉구 무료 셔틀버스 운행계획",
+          "url": "https://news.seoul.go.kr/traffic/files/2025/04/6960bc63505a68.83566659.pdf",
+          "type": "district_link"
+        },
+        {
+          "district": "노원구",
+          "text": "노원구 무료 셔틀버스 운행계획",
+          "url": "https://news.seoul.go.kr/traffic/files/2025/04/6960bc7710fcb6.08090581.pdf",
+          "type": "district_link"
+        },
+        {
+          "district": "은평구",
+          "text": "은평구 무료 셔틀버스 운행계획",
+          "url": "https://news.seoul.go.kr/traffic/files/2025/04/6960be6b5c5a85.67377516.pdf",
+          "type": "district_link"
+        },
+        {
+          "district": "서대문구",
+          "text": "서대문구 무료 셔틀버스 운행계획",
+          "url": "https://news.seoul.go.kr/traffic/files/2025/04/6960be81607cf4.51255911.pdf",
+          "type": "district_link"
+        },
+        {
+          "district": "마포구",
+          "text": "마포구 무료 셔틀버스 운행계획(1.14. 업데이트)",
+          "url": "https://news.seoul.go.kr/traffic/files/2026/01/6967485f4b4477.46210731.pdf",
+          "type": "district_link"
+        },
+        {
+          "district": "양천구",
+          "text": "양천구 무료 셔틀버스 운행계획",
+          "url": "https://news.seoul.go.kr/traffic/files/2025/04/6960bea4eaddd5.46543559.pdf",
+          "type": "district_link"
+        },
+        {
+          "district": "강서구",
+          "text": "강서구 무료 셔틀버스 운행계획(1.14. 업데이트)",
+          "url": "https://news.seoul.go.kr/traffic/files/2026/01/69674817bcf312.06629941.pdf",
+          "type": "district_link"
+        },
+        {
+          "district": "구로구",
+          "text": "구로구 무료 셔틀버스 운행계획(1.14. 업데이트)",
+          "url": "https://news.seoul.go.kr/traffic/files/2026/01/696742b449be10.20025843.pdf",
+          "type": "district_link"
+        },
+        {
+          "district": "금천구",
+          "text": "금천구 무료 셔틀버스 운행계획",
+          "url": "https://news.seoul.go.kr/traffic/files/2025/04/6964380d8f81a6.23967268.pdf",
+          "type": "district_link"
+        },
+        {
+          "district": "영등포구",
+          "text": "영등포구 무료 셔틀버스 운행계획",
+          "url": "https://news.seoul.go.kr/traffic/files/2025/04/6964381f9648e2.37582838.pdf",
+          "type": "district_link"
+        },
+        {
+          "district": "동작구",
+          "text": "동작구 무료 셔틀버스 운행계획",
+          "url": "https://news.seoul.go.kr/traffic/files/2025/04/696438316b8489.10782102.pdf",
+          "type": "district_link"
+        },
+        {
+          "district": "관악구",
+          "text": "관악구 무료 셔틀버스 운행계획",
+          "url": "https://news.seoul.go.kr/traffic/files/2025/04/6964383d983985.95217707.pdf",
+          "type": "district_link"
+        },
+        {
+          "district": "서초구",
+          "text": "서초구 무료 셔틀버스 운행계획(1.14. 업데이트)",
+          "url": "https://news.seoul.go.kr/traffic/files/2026/01/6967496f7fede6.46786550.pdf",
+          "type": "district_link"
+        },
+        {
+          "district": "서초구",
+          "text": "서초구 무료 셔틀버스 노선도(1.14. 업데이트)",
+          "url": "https://news.seoul.go.kr/traffic/files/2026/01/6967497f31f6f3.19903507.pdf",
+          "type": "district_link"
+        },
+        {
+          "district": "강남구",
+          "text": "강남구 무료 셔틀버스 운행계획(1.14. 업데이트)",
+          "url": "https://news.seoul.go.kr/traffic/files/2026/01/69674156843c36.10382952.pdf",
+          "type": "district_link"
+        },
+        {
+          "district": "송파구",
+          "text": "송파구 무료 셔틀버스 운행계획",
+          "url": "https://news.seoul.go.kr/traffic/files/2025/04/696438a69f81f1.58223196.pdf",
+          "type": "district_link"
+        },
+        {
+          "district": "강동구",
+          "text": "강동구 무료 셔틀버스 운행계획",
+          "url": "https://news.seoul.go.kr/traffic/files/2025/04/696438b119c209.13245187.pdf",
+          "type": "district_link"
+        }
+      ],
+      "attachments": [
+        {
+          "filename": "종로구 무료 셔틀버스 운행계획(1.14. 업데이트)",
+          "url": "https://news.seoul.go.kr/traffic/files/2026/01/696755383c4c38.76782245.pdf",
+          "type": "pdf",
+          "source": "https://news.seoul.go.kr/traffic/archives/514068"
+        },
+        {
+          "filename": "중구 무료 셔틀버스 운행계획(1.14. 업데이트)",
+          "url": "https://news.seoul.go.kr/traffic/files/2026/01/696740bd9f2463.83357516.pdf",
+          "type": "pdf",
+          "source": "https://news.seoul.go.kr/traffic/archives/514068"
+        },
+        {
+          "filename": "용산구 무료 셔틀버스 운행계획",
+          "url": "https://news.seoul.go.kr/traffic/files/2025/04/6960b81c9eb072.32497220.pdf",
+          "type": "pdf",
+          "source": "https://news.seoul.go.kr/traffic/archives/514068"
+        },
+        {
+          "filename": "성동구 무료 셔틀버스 운행계획",
+          "url": "https://news.seoul.go.kr/traffic/files/2025/04/6960bb6e452264.96785651.pdf",
+          "type": "pdf",
+          "source": "https://news.seoul.go.kr/traffic/archives/514068"
+        },
+        {
+          "filename": "광진구 무료 셔틀버스 운행계획",
+          "url": "https://news.seoul.go.kr/traffic/files/2025/04/6960bb7a2b8265.39406629.pdf",
+          "type": "pdf",
+          "source": "https://news.seoul.go.kr/traffic/archives/514068"
+        },
+        {
+          "filename": "동대문구 무료 셔틀버스 운행계획(1.14. 업데이트)",
+          "url": "https://news.seoul.go.kr/traffic/files/2026/01/6967551e45f2b0.41344070.pdf",
+          "type": "pdf",
+          "source": "https://news.seoul.go.kr/traffic/archives/514068"
+        },
+        {
+          "filename": "중랑구 무료 셔틀버스 운행계획",
+          "url": "https://news.seoul.go.kr/traffic/files/2025/04/6960bc2c228be2.14808062.pdf",
+          "type": "pdf",
+          "source": "https://news.seoul.go.kr/traffic/archives/514068"
+        },
+        {
+          "filename": "강북구 무료 셔틀버스 운행계획",
+          "url": "https://news.seoul.go.kr/traffic/files/2025/04/6960bc56817785.51991881.pdf",
+          "type": "pdf",
+          "source": "https://news.seoul.go.kr/traffic/archives/514068"
+        },
+        {
+          "filename": "도봉구 무료 셔틀버스 운행계획",
+          "url": "https://news.seoul.go.kr/traffic/files/2025/04/6960bc63505a68.83566659.pdf",
+          "type": "pdf",
+          "source": "https://news.seoul.go.kr/traffic/archives/514068"
+        },
+        {
+          "filename": "노원구 무료 셔틀버스 운행계획",
+          "url": "https://news.seoul.go.kr/traffic/files/2025/04/6960bc7710fcb6.08090581.pdf",
+          "type": "pdf",
+          "source": "https://news.seoul.go.kr/traffic/archives/514068"
+        },
+        {
+          "filename": "은평구 무료 셔틀버스 운행계획",
+          "url": "https://news.seoul.go.kr/traffic/files/2025/04/6960be6b5c5a85.67377516.pdf",
+          "type": "pdf",
+          "source": "https://news.seoul.go.kr/traffic/archives/514068"
+        },
+        {
+          "filename": "서대문구 무료 셔틀버스 운행계획",
+          "url": "https://news.seoul.go.kr/traffic/files/2025/04/6960be81607cf4.51255911.pdf",
+          "type": "pdf",
+          "source": "https://news.seoul.go.kr/traffic/archives/514068"
+        },
+        {
+          "filename": "마포구 무료 셔틀버스 운행계획(1.14. 업데이트)",
+          "url": "https://news.seoul.go.kr/traffic/files/2026/01/6967485f4b4477.46210731.pdf",
+          "type": "pdf",
+          "source": "https://news.seoul.go.kr/traffic/archives/514068"
+        },
+        {
+          "filename": "양천구 무료 셔틀버스 운행계획",
+          "url": "https://news.seoul.go.kr/traffic/files/2025/04/6960bea4eaddd5.46543559.pdf",
+          "type": "pdf",
+          "source": "https://news.seoul.go.kr/traffic/archives/514068"
+        },
+        {
+          "filename": "강서구 무료 셔틀버스 운행계획(1.14. 업데이트)",
+          "url": "https://news.seoul.go.kr/traffic/files/2026/01/69674817bcf312.06629941.pdf",
+          "type": "pdf",
+          "source": "https://news.seoul.go.kr/traffic/archives/514068"
+        },
+        {
+          "filename": "구로구 무료 셔틀버스 운행계획(1.14. 업데이트)",
+          "url": "https://news.seoul.go.kr/traffic/files/2026/01/696742b449be10.20025843.pdf",
+          "type": "pdf",
+          "source": "https://news.seoul.go.kr/traffic/archives/514068"
+        },
+        {
+          "filename": "금천구 무료 셔틀버스 운행계획",
+          "url": "https://news.seoul.go.kr/traffic/files/2025/04/6964380d8f81a6.23967268.pdf",
+          "type": "pdf",
+          "source": "https://news.seoul.go.kr/traffic/archives/514068"
+        },
+        {
+          "filename": "영등포구 무료 셔틀버스 운행계획",
+          "url": "https://news.seoul.go.kr/traffic/files/2025/04/6964381f9648e2.37582838.pdf",
+          "type": "pdf",
+          "source": "https://news.seoul.go.kr/traffic/archives/514068"
+        },
+        {
+          "filename": "동작구 무료 셔틀버스 운행계획",
+          "url": "https://news.seoul.go.kr/traffic/files/2025/04/696438316b8489.10782102.pdf",
+          "type": "pdf",
+          "source": "https://news.seoul.go.kr/traffic/archives/514068"
+        },
+        {
+          "filename": "관악구 무료 셔틀버스 운행계획",
+          "url": "https://news.seoul.go.kr/traffic/files/2025/04/6964383d983985.95217707.pdf",
+          "type": "pdf",
+          "source": "https://news.seoul.go.kr/traffic/archives/514068"
+        },
+        {
+          "filename": "서초구 무료 셔틀버스 운행계획(1.14. 업데이트)",
+          "url": "https://news.seoul.go.kr/traffic/files/2026/01/6967496f7fede6.46786550.pdf",
+          "type": "pdf",
+          "source": "https://news.seoul.go.kr/traffic/archives/514068"
+        },
+        {
+          "filename": "서초구 무료 셔틀버스 노선도(1.14. 업데이트)",
+          "url": "https://news.seoul.go.kr/traffic/files/2026/01/6967497f31f6f3.19903507.pdf",
+          "type": "pdf",
+          "source": "https://news.seoul.go.kr/traffic/archives/514068"
+        },
+        {
+          "filename": "강남구 무료 셔틀버스 운행계획(1.14. 업데이트)",
+          "url": "https://news.seoul.go.kr/traffic/files/2026/01/69674156843c36.10382952.pdf",
+          "type": "pdf",
+          "source": "https://news.seoul.go.kr/traffic/archives/514068"
+        },
+        {
+          "filename": "송파구 무료 셔틀버스 운행계획",
+          "url": "https://news.seoul.go.kr/traffic/files/2025/04/696438a69f81f1.58223196.pdf",
+          "type": "pdf",
+          "source": "https://news.seoul.go.kr/traffic/archives/514068"
+        },
+        {
+          "filename": "강동구 무료 셔틀버스 운행계획",
+          "url": "https://news.seoul.go.kr/traffic/files/2025/04/696438b119c209.13245187.pdf",
+          "type": "pdf",
+          "source": "https://news.seoul.go.kr/traffic/archives/514068"
+        }
+      ],
+      "routes": [
+        {
+          "district": "종로구",
+          "raw_text": "종로구\n종로구 무료 셔틀버스 운행계획(1.14. 업데이트)\n2\n중구",
+          "source": "https://news.seoul.go.kr/traffic/archives/514068"
+        },
+        {
+          "district": "중구",
+          "raw_text": "중구\n중구 무료 셔틀버스 운행계획(1.14. 업데이트)\n3\n용산구",
+          "source": "https://news.seoul.go.kr/traffic/archives/514068"
+        },
+        {
+          "district": "용산구",
+          "raw_text": "용산구\n용산구 무료 셔틀버스 운행계획\n4\n성동구",
+          "source": "https://news.seoul.go.kr/traffic/archives/514068"
+        },
+        {
+          "district": "성동구",
+          "raw_text": "성동구\n성동구 무료 셔틀버스 운행계획\n5\n광진구",
+          "source": "https://news.seoul.go.kr/traffic/archives/514068"
+        },
+        {
+          "district": "광진구",
+          "raw_text": "광진구\n광진구 무료 셔틀버스 운행계획\n6\n동대문구",
+          "source": "https://news.seoul.go.kr/traffic/archives/514068"
+        },
+        {
+          "district": "동대문구",
+          "raw_text": "동대문구\n동대문구 무료 셔틀버스 운행계획(1.14. 업데이트)\n7\n중랑구",
+          "source": "https://news.seoul.go.kr/traffic/archives/514068"
+        },
+        {
+          "district": "중랑구",
+          "raw_text": "중랑구\n중랑구 무료 셔틀버스 운행계획\n8\n성북구",
+          "source": "https://news.seoul.go.kr/traffic/archives/514068"
+        },
+        {
+          "district": "성북구",
+          "raw_text": "성북구\n📢(노선추가)시내버스 파업대비 성북구 무료셔.. : 네이버블로그\n9\n강북구",
+          "source": "https://news.seoul.go.kr/traffic/archives/514068"
+        },
+        {
+          "district": "강북구",
+          "raw_text": "강북구\n강북구 무료 셔틀버스 운행계획\n10\n도봉구",
+          "source": "https://news.seoul.go.kr/traffic/archives/514068"
+        },
+        {
+          "district": "도봉구",
+          "raw_text": "도봉구\n도봉구 무료 셔틀버스 운행계획\n11\n노원구",
+          "source": "https://news.seoul.go.kr/traffic/archives/514068"
+        },
+        {
+          "district": "노원구",
+          "raw_text": "노원구\n노원구 무료 셔틀버스 운행계획\n12\n은평구",
+          "source": "https://news.seoul.go.kr/traffic/archives/514068"
+        },
+        {
+          "district": "은평구",
+          "raw_text": "은평구\n은평구 무료 셔틀버스 운행계획\n13\n서대문구",
+          "source": "https://news.seoul.go.kr/traffic/archives/514068"
+        },
+        {
+          "district": "서대문구",
+          "raw_text": "서대문구\n서대문구 무료 셔틀버스 운행계획\n14\n마포구",
+          "source": "https://news.seoul.go.kr/traffic/archives/514068"
+        },
+        {
+          "district": "마포구",
+          "raw_text": "마포구\n마포구 무료 셔틀버스 운행계획(1.14. 업데이트)\n15\n양천구",
+          "source": "https://news.seoul.go.kr/traffic/archives/514068"
+        },
+        {
+          "district": "양천구",
+          "raw_text": "양천구\n양천구 무료 셔틀버스 운행계획\n16\n강서구",
+          "source": "https://news.seoul.go.kr/traffic/archives/514068"
+        },
+        {
+          "district": "강서구",
+          "raw_text": "강서구\n강서구 무료 셔틀버스 운행계획(1.14. 업데이트)\n17\n구로구",
+          "source": "https://news.seoul.go.kr/traffic/archives/514068"
+        },
+        {
+          "district": "구로구",
+          "raw_text": "구로구\n구로구 무료 셔틀버스 운행계획(1.14. 업데이트)\n18\n금천구",
+          "source": "https://news.seoul.go.kr/traffic/archives/514068"
+        },
+        {
+          "district": "금천구",
+          "raw_text": "금천구\n금천구 무료 셔틀버스 운행계획\n19\n영등포구",
+          "source": "https://news.seoul.go.kr/traffic/archives/514068"
+        },
+        {
+          "district": "영등포구",
+          "raw_text": "영등포구\n영등포구 무료 셔틀버스 운행계획\n20\n동작구",
+          "source": "https://news.seoul.go.kr/traffic/archives/514068"
+        },
+        {
+          "district": "동작구",
+          "raw_text": "동작구\n동작구 무료 셔틀버스 운행계획\n21\n관악구",
+          "source": "https://news.seoul.go.kr/traffic/archives/514068"
+        },
+        {
+          "district": "관악구",
+          "raw_text": "관악구\n관악구 무료 셔틀버스 운행계획\n22\n서초구",
+          "source": "https://news.seoul.go.kr/traffic/archives/514068"
+        },
+        {
+          "district": "서초구",
+          "raw_text": "서초구\n서초구 무료 셔틀버스 운행계획(1.14. 업데이트)\n서초구 무료 셔틀버스 노선도(1.14. 업데이트)\n23\n강남구",
+          "source": "https://news.seoul.go.kr/traffic/archives/514068"
+        },
+        {
+          "district": "강남구",
+          "raw_text": "강남구\n강남구 무료 셔틀버스 운행계획(1.14. 업데이트)\n24\n송파구",
+          "source": "https://news.seoul.go.kr/traffic/archives/514068"
+        },
+        {
+          "district": "송파구",
+          "raw_text": "송파구\n송파구 무료 셔틀버스 운행계획\n25\n강동구",
+          "source": "https://news.seoul.go.kr/traffic/archives/514068"
+        },
+        {
+          "district": "강동구",
+          "raw_text": "강동구\n강동구 무료 셔틀버스 운행계획\n추천하기\n0\n인쇄\n스크랩\n카카오톡\n페이스북\nX\n네이버블로그\nURL 복사\n닫기\n메일주소\n본 저작물은 \"공공누리\"\n제4유형:출처표시+상업적 이용금지+변경금지\n조건에 따라 이용 할 수 있습니다.\n페이지 만족도 평가\n이 페이지에서 제공하는 정보에 대하여 만족하십니까?\n네\n아니오\n5점 - 매우만족\n4점 - 만족\n3점 - 보통\n2점 - 불만족\n1점 - 매우 불만족\n평가하기\n목록\n댓글은 자유롭게 의견을 공유하는 공간입니다. 서울시 정책에 대한 신고·제안·건의 등은\n응답소 누리집(전자민원사이트)\n을 이용하여 신청해주시기 바랍니다.\n상업성 광고, 저작권 침해, 저속한 표현, 특정인에 대한 비방, 명예훼손, 정치적 목적, 유사한 내용의 반복적 글, 개인정보 유출,그 밖에 공익을 저해하거나 운영 취지에 맞지 않는 댓글은 서울특별시 조례 및 개인정보보호법에 의해 통보없이 삭제될 수 있습니다.\n응답소 누리집 바로가기\n누리집 도우미\n개인정보 처리방침\n이용약관\n저작권 정책\n고정형 영상정보처리기기 운영·관리 방침\n누리집 바로잡기\n누리집지도\n서울시 카카오톡 채널 추가\n인스타그램\n유튜브\n페이스북\n엑스\n블로그\n카카오스토리\n서울특별시\n문의 전화번호 120, 120 다산콜재단\n서울특별시청  04524 서울특별시 중구 세종대로 110",
+          "source": "https://news.seoul.go.kr/traffic/archives/514068"
+        }
+      ],
+      "crawled_at": "2026-01-14 18:36:37"
+    },
+    {
+      "source": {
+        "name": "서울시 교통정보",
+        "url": "https://topis.seoul.go.kr",
+        "type": "reference"
+      },
+      "district_links": [],
+      "attachments": [
+        {
+          "filename": "waqc-251401_topis.pdf",
+          "url": "https://topis.seoul.go.kr/WAQC-251401_TOPIS.pdf",
+          "type": "pdf",
+          "source": "https://topis.seoul.go.kr"
+        }
+      ],
+      "routes": [
+        {
+          "district": "중구",
+          "raw_text": "[04515] 서울특별시 중구 덕수궁길 15(서소문동 37, 서소문청사 1동 5층) ㅣ 전화안내 - 다산콜센터 :120",
+          "source": "https://topis.seoul.go.kr"
+        }
+      ],
+      "crawled_at": "2026-01-14 18:36:38"
+    }
+  ],
+  "district_results": [
+    {
+      "district": "종로구",
+      "url": "https://news.seoul.go.kr/traffic/files/2026/01/696755383c4c38.76782245.pdf",
+      "attachments": [],
+      "routes": [],
+      "crawled_at": "2026-01-14 18:36:39"
+    },
+    {
+      "district": "중구",
+      "url": "https://news.seoul.go.kr/traffic/files/2026/01/696740bd9f2463.83357516.pdf",
+      "attachments": [],
+      "routes": [],
+      "crawled_at": "2026-01-14 18:36:40"
+    },
+    {
+      "district": "용산구",
+      "url": "https://news.seoul.go.kr/traffic/files/2025/04/6960b81c9eb072.32497220.pdf",
+      "attachments": [],
+      "routes": [],
+      "crawled_at": "2026-01-14 18:36:41"
+    },
+    {
+      "district": "성동구",
+      "url": "https://news.seoul.go.kr/traffic/files/2025/04/6960bb6e452264.96785651.pdf",
+      "attachments": [],
+      "routes": [],
+      "crawled_at": "2026-01-14 18:36:42"
+    },
+    {
+      "district": "광진구",
+      "url": "https://news.seoul.go.kr/traffic/files/2025/04/6960bb7a2b8265.39406629.pdf",
+      "attachments": [],
+      "routes": [],
+      "crawled_at": "2026-01-14 18:36:43"
+    },
+    {
+      "district": "동대문구",
+      "url": "https://news.seoul.go.kr/traffic/files/2026/01/6967551e45f2b0.41344070.pdf",
+      "attachments": [],
+      "routes": [],
+      "crawled_at": "2026-01-14 18:36:45"
+    },
+    {
+      "district": "중랑구",
+      "url": "https://news.seoul.go.kr/traffic/files/2025/04/6960bc2c228be2.14808062.pdf",
+      "attachments": [],
+      "routes": [],
+      "crawled_at": "2026-01-14 18:36:46"
+    },
+    {
+      "district": "성북구",
+      "url": "https://blog.naver.com/storysb/224143289508",
+      "attachments": [],
+      "routes": [],
+      "crawled_at": "2026-01-14 18:36:47"
+    },
+    {
+      "district": "강북구",
+      "url": "https://news.seoul.go.kr/traffic/files/2025/04/6960bc56817785.51991881.pdf",
+      "attachments": [],
+      "routes": [],
+      "crawled_at": "2026-01-14 18:36:48"
+    },
+    {
+      "district": "도봉구",
+      "url": "https://news.seoul.go.kr/traffic/files/2025/04/6960bc63505a68.83566659.pdf",
+      "attachments": [],
+      "routes": [],
+      "crawled_at": "2026-01-14 18:36:49"
+    },
+    {
+      "district": "노원구",
+      "url": "https://news.seoul.go.kr/traffic/files/2025/04/6960bc7710fcb6.08090581.pdf",
+      "attachments": [],
+      "routes": [],
+      "crawled_at": "2026-01-14 18:36:50"
+    },
+    {
+      "district": "은평구",
+      "url": "https://news.seoul.go.kr/traffic/files/2025/04/6960be6b5c5a85.67377516.pdf",
+      "attachments": [],
+      "routes": [],
+      "crawled_at": "2026-01-14 18:36:51"
+    },
+    {
+      "district": "서대문구",
+      "url": "https://news.seoul.go.kr/traffic/files/2025/04/6960be81607cf4.51255911.pdf",
+      "attachments": [],
+      "routes": [],
+      "crawled_at": "2026-01-14 18:36:52"
+    },
+    {
+      "district": "마포구",
+      "url": "https://news.seoul.go.kr/traffic/files/2026/01/6967485f4b4477.46210731.pdf",
+      "attachments": [],
+      "routes": [],
+      "crawled_at": "2026-01-14 18:36:53"
+    },
+    {
+      "district": "양천구",
+      "url": "https://news.seoul.go.kr/traffic/files/2025/04/6960bea4eaddd5.46543559.pdf",
+      "attachments": [],
+      "routes": [],
+      "crawled_at": "2026-01-14 18:36:54"
+    },
+    {
+      "district": "강서구",
+      "url": "https://news.seoul.go.kr/traffic/files/2026/01/69674817bcf312.06629941.pdf",
+      "attachments": [],
+      "routes": [],
+      "crawled_at": "2026-01-14 18:36:55"
+    },
+    {
+      "district": "구로구",
+      "url": "https://news.seoul.go.kr/traffic/files/2026/01/696742b449be10.20025843.pdf",
+      "attachments": [],
+      "routes": [],
+      "crawled_at": "2026-01-14 18:36:57"
+    },
+    {
+      "district": "금천구",
+      "url": "https://news.seoul.go.kr/traffic/files/2025/04/6964380d8f81a6.23967268.pdf",
+      "attachments": [],
+      "routes": [],
+      "crawled_at": "2026-01-14 18:36:58"
+    },
+    {
+      "district": "영등포구",
+      "url": "https://news.seoul.go.kr/traffic/files/2025/04/6964381f9648e2.37582838.pdf",
+      "attachments": [],
+      "routes": [],
+      "crawled_at": "2026-01-14 18:36:59"
+    },
+    {
+      "district": "동작구",
+      "url": "https://news.seoul.go.kr/traffic/files/2025/04/696438316b8489.10782102.pdf",
+      "attachments": [],
+      "routes": [],
+      "crawled_at": "2026-01-14 18:37:00"
+    },
+    {
+      "district": "관악구",
+      "url": "https://news.seoul.go.kr/traffic/files/2025/04/6964383d983985.95217707.pdf",
+      "attachments": [],
+      "routes": [],
+      "crawled_at": "2026-01-14 18:37:01"
+    },
+    {
+      "district": "서초구",
+      "url": "https://news.seoul.go.kr/traffic/files/2026/01/6967496f7fede6.46786550.pdf",
+      "attachments": [],
+      "routes": [],
+      "crawled_at": "2026-01-14 18:37:02"
+    },
+    {
+      "district": "서초구",
+      "url": "https://news.seoul.go.kr/traffic/files/2026/01/6967497f31f6f3.19903507.pdf",
+      "attachments": [],
+      "routes": [],
+      "crawled_at": "2026-01-14 18:37:03"
+    },
+    {
+      "district": "강남구",
+      "url": "https://news.seoul.go.kr/traffic/files/2026/01/69674156843c36.10382952.pdf",
+      "attachments": [],
+      "routes": [],
+      "crawled_at": "2026-01-14 18:37:04"
+    },
+    {
+      "district": "송파구",
+      "url": "https://news.seoul.go.kr/traffic/files/2025/04/696438a69f81f1.58223196.pdf",
+      "attachments": [],
+      "routes": [],
+      "crawled_at": "2026-01-14 18:37:06"
+    },
+    {
+      "district": "강동구",
+      "url": "https://news.seoul.go.kr/traffic/files/2025/04/696438b119c209.13245187.pdf",
+      "attachments": [],
+      "routes": [],
+      "crawled_at": "2026-01-14 18:37:07"
+    }
+  ],
+  "downloaded_files": [
+    "D:\\seoul-shuttle-bus\\data\\raw\\종로구 무료 셔틀버스 운행계획(1.14. 업데이트).pdf",
+    "D:\\seoul-shuttle-bus\\data\\raw\\중구 무료 셔틀버스 운행계획(1.14. 업데이트).pdf",
+    "D:\\seoul-shuttle-bus\\data\\raw\\용산구 무료 셔틀버스 운행계획.pdf",
+    "D:\\seoul-shuttle-bus\\data\\raw\\성동구 무료 셔틀버스 운행계획.pdf",
+    "D:\\seoul-shuttle-bus\\data\\raw\\광진구 무료 셔틀버스 운행계획.pdf",
+    "D:\\seoul-shuttle-bus\\data\\raw\\동대문구 무료 셔틀버스 운행계획(1.14. 업데이트).pdf",
+    "D:\\seoul-shuttle-bus\\data\\raw\\중랑구 무료 셔틀버스 운행계획.pdf",
+    "D:\\seoul-shuttle-bus\\data\\raw\\강북구 무료 셔틀버스 운행계획.pdf",
+    "D:\\seoul-shuttle-bus\\data\\raw\\도봉구 무료 셔틀버스 운행계획.pdf",
+    "D:\\seoul-shuttle-bus\\data\\raw\\노원구 무료 셔틀버스 운행계획.pdf",
+    "D:\\seoul-shuttle-bus\\data\\raw\\은평구 무료 셔틀버스 운행계획.pdf",
+    "D:\\seoul-shuttle-bus\\data\\raw\\서대문구 무료 셔틀버스 운행계획.pdf",
+    "D:\\seoul-shuttle-bus\\data\\raw\\마포구 무료 셔틀버스 운행계획(1.14. 업데이트).pdf",
+    "D:\\seoul-shuttle-bus\\data\\raw\\양천구 무료 셔틀버스 운행계획.pdf",
+    "D:\\seoul-shuttle-bus\\data\\raw\\강서구 무료 셔틀버스 운행계획(1.14. 업데이트).pdf",
+    "D:\\seoul-shuttle-bus\\data\\raw\\구로구 무료 셔틀버스 운행계획(1.14. 업데이트).pdf",
+    "D:\\seoul-shuttle-bus\\data\\raw\\금천구 무료 셔틀버스 운행계획.pdf",
+    "D:\\seoul-shuttle-bus\\data\\raw\\영등포구 무료 셔틀버스 운행계획.pdf",
+    "D:\\seoul-shuttle-bus\\data\\raw\\동작구 무료 셔틀버스 운행계획.pdf",
+    "D:\\seoul-shuttle-bus\\data\\raw\\관악구 무료 셔틀버스 운행계획.pdf",
+    "D:\\seoul-shuttle-bus\\data\\raw\\서초구 무료 셔틀버스 운행계획(1.14. 업데이트).pdf",
+    "D:\\seoul-shuttle-bus\\data\\raw\\서초구 무료 셔틀버스 노선도(1.14. 업데이트).pdf",
+    "D:\\seoul-shuttle-bus\\data\\raw\\강남구 무료 셔틀버스 운행계획(1.14. 업데이트).pdf",
+    "D:\\seoul-shuttle-bus\\data\\raw\\송파구 무료 셔틀버스 운행계획.pdf",
+    "D:\\seoul-shuttle-bus\\data\\raw\\강동구 무료 셔틀버스 운행계획.pdf",
+    "D:\\seoul-shuttle-bus\\data\\raw\\waqc-251401_topis.pdf"
+  ],
+  "summary": {
+    "total_sources": 2,
+    "total_district_pages": 26,
+    "total_attachments": 26,
+    "crawled_at": "2026-01-14 18:37:09"
+  }
+}

@@ -1,0 +1,16 @@
+# 서울 무료 셔틀버스 자동화 시스템 의존성
+
+# 크롤링
+requests>=2.28.0
+beautifulsoup4>=4.11.0
+lxml>=4.9.0
+
+# PDF OCR (선택사항 - PDF 처리 시 필요)
+pdf2image>=1.16.0
+pytesseract>=0.3.10
+Pillow>=9.0.0
+
+# 참고: Tesseract OCR 시스템 설치 필요
+# Windows: https://github.com/UB-Mannheim/tesseract/wiki
+# Mac: brew install tesseract tesseract-lang
+# Linux: sudo apt install tesseract-ocr tesseract-ocr-kor

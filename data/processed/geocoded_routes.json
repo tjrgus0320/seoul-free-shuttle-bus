@@ -1,0 +1,8 @@
+{
+  "districts": [],
+  "stats": {
+    "cache_hits": 0,
+    "api_calls": 0,
+    "failures": 0
+  }
+}

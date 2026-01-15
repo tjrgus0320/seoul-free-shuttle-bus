@@ -1,0 +1,21 @@
+{
+  "validation": {
+    "valid": false,
+    "errors": [
+      "자치구 데이터 없음"
+    ],
+    "warnings": [],
+    "error_count": 1,
+    "warning_count": 0
+  },
+  "quality": {
+    "district_coverage": 0.0,
+    "info_completeness": 0,
+    "total_districts": 0,
+    "total_routes": 0,
+    "total_stops": 0,
+    "avg_stops_per_route": 0,
+    "overall_score": 0.0
+  },
+  "generated_at": "2026-01-14 18:37:09"
+}
