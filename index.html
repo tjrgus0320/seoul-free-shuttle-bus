@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>서울 무료 셔틀버스 노선도</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -469,7 +468,7 @@
       border-radius: var(--radius-lg);
       padding: 16px;
       box-shadow: var(--shadow-lg);
-      z-index: 1000;
+      z-index: 5;
     }
 
     .legend-title {
@@ -512,7 +511,7 @@
       right: 24px;
       display: flex;
       gap: 12px;
-      z-index: 1000;
+      z-index: 5;
     }
 
     .stat-card {
@@ -611,26 +610,25 @@
       }
     }
 
-    /* Leaflet Custom */
-    .leaflet-popup-content-wrapper {
-      border-radius: var(--radius-md);
-      box-shadow: var(--shadow-lg);
+    /* Google Maps InfoWindow */
+    .gm-style-iw {
+      font-family: 'Pretendard', sans-serif !important;
     }
 
-    .leaflet-popup-content {
-      margin: 12px 14px;
-      font-family: 'Pretendard', sans-serif;
+    .info-window {
+      padding: 8px 4px;
     }
 
-    .popup-title {
+    .info-window .title {
       font-weight: 600;
-      color: var(--text-primary);
+      font-size: 14px;
+      color: #0f172a;
       margin-bottom: 4px;
     }
 
-    .popup-route {
-      font-size: 0.8rem;
-      color: var(--text-muted);
+    .info-window .route {
+      font-size: 12px;
+      color: #64748b;
     }
   </style>
 </head>
@@ -711,11 +709,12 @@
   </div>
 </main>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 // Global State
 let map;
-let layers = [];
+let markers = [];
+let polylines = [];
+let infoWindow;
 let shuttleData = null;
 let activeDistrict = null;
 let activeRoute = null;
@@ -740,18 +739,28 @@ function toggleTheme() {
   }
 }
 
-// Initialize Map
+// Initialize Google Map
 function initMap() {
-  map = L.map('map', {
-    zoomControl: false
-  }).setView([37.5665, 126.9780], 11);
+  map = new google.maps.Map(document.getElementById('map'), {
+    center: { lat: 37.5665, lng: 126.9780 },
+    zoom: 11,
+    styles: [
+      { featureType: 'poi', stylers: [{ visibility: 'simplified' }] },
+      { featureType: 'transit', stylers: [{ visibility: 'simplified' }] }
+    ],
+    mapTypeControl: false,
+    streetViewControl: false,
+    fullscreenControl: true,
+    zoomControl: true,
+    zoomControlOptions: {
+      position: google.maps.ControlPosition.RIGHT_CENTER
+    }
+  });
 
-  L.control.zoom({ position: 'topright' }).addTo(map);
+  infoWindow = new google.maps.InfoWindow();
 
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-    attribution: '&copy; OpenStreetMap &copy; CARTO',
-    maxZoom: 19
-  }).addTo(map);
+  // Load data after map is ready
+  loadData();
 }
 
 // Load Data
@@ -869,75 +878,90 @@ function renderRouteList(district) {
   container.innerHTML = html;
 }
 
+// Clear Map
+function clearMap() {
+  markers.forEach(marker => marker.setMap(null));
+  polylines.forEach(polyline => polyline.setMap(null));
+  markers = [];
+  polylines = [];
+  infoWindow.close();
+}
+
+// Create custom marker icon
+function createMarkerIcon(color, size) {
+  return {
+    path: google.maps.SymbolPath.CIRCLE,
+    fillColor: color,
+    fillOpacity: 1,
+    strokeColor: '#ffffff',
+    strokeWeight: 3,
+    scale: size
+  };
+}
+
 // Show All Routes on Map
 function showAllRoutesOnMap(district) {
-  // Clear existing layers
-  layers.forEach(layer => map.removeLayer(layer));
-  layers = [];
+  clearMap();
 
-  const bounds = L.latLngBounds();
+  const bounds = new google.maps.LatLngBounds();
 
   district.routes.forEach((route, routeIdx) => {
     const color = COLORS[routeIdx % COLORS.length];
-    const coords = route.stops.map(s => [s.lat, s.lng]);
+    const path = [];
 
     // Add markers for each stop
     route.stops.forEach((stop, stopIdx) => {
+      const position = { lat: stop.lat, lng: stop.lng };
+      path.push(position);
+      bounds.extend(position);
+
       let markerColor = color;
-      let size = 12;
-      let zIndex = 100;
+      let markerSize = 8;
 
       if (stopIdx === 0) {
-        markerColor = '#10b981';
-        size = 16;
-        zIndex = 200;
+        markerColor = '#10b981'; // Green for start
+        markerSize = 10;
       } else if (stopIdx === route.stops.length - 1) {
-        markerColor = '#f97316';
-        size = 16;
-        zIndex = 200;
+        markerColor = '#f97316'; // Orange for end
+        markerSize = 10;
       }
 
-      const icon = L.divIcon({
-        className: 'custom-marker',
-        html: `<div style="
-          width: ${size}px;
-          height: ${size}px;
-          background: ${markerColor};
-          border-radius: 50%;
-          border: 3px solid white;
-          box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-        "></div>`,
-        iconSize: [size, size],
-        iconAnchor: [size/2, size/2]
+      const marker = new google.maps.Marker({
+        position: position,
+        map: map,
+        icon: createMarkerIcon(markerColor, markerSize),
+        title: stop.name,
+        zIndex: stopIdx === 0 || stopIdx === route.stops.length - 1 ? 100 : 50
       });
 
-      const marker = L.marker([stop.lat, stop.lng], { icon, zIndexOffset: zIndex })
-        .addTo(map)
-        .bindPopup(`
-          <div class="popup-title">${stop.name}</div>
-          <div class="popup-route">${route.name}</div>
+      marker.addListener('click', () => {
+        infoWindow.setContent(`
+          <div class="info-window">
+            <div class="title">${stop.name}</div>
+            <div class="route">${route.name}</div>
+          </div>
         `);
+        infoWindow.open(map, marker);
+      });
 
-      layers.push(marker);
-      bounds.extend([stop.lat, stop.lng]);
+      markers.push(marker);
     });
 
-    // Add route line
-    const polyline = L.polyline(coords, {
-      color: color,
-      weight: 5,
-      opacity: 0.8,
-      lineCap: 'round',
-      lineJoin: 'round'
-    }).addTo(map);
+    // Add route polyline
+    const polyline = new google.maps.Polyline({
+      path: path,
+      geodesic: true,
+      strokeColor: color,
+      strokeOpacity: 0.8,
+      strokeWeight: 5,
+      map: map
+    });
 
-    layers.push(polyline);
+    polylines.push(polyline);
   });
 
   // Fit map to bounds
-  if (bounds.isValid()) {
-    map.fitBounds(bounds, { padding: [60, 60] });
-  }
+  map.fitBounds(bounds, { top: 60, right: 60, bottom: 60, left: 60 });
 }
 
 // Focus Route
@@ -954,16 +978,17 @@ function focusRoute(districtName, routeIdx) {
   });
 
   // Fit map to route
-  const coords = route.stops.map(s => [s.lat, s.lng]);
-  const bounds = L.latLngBounds(coords);
-  map.fitBounds(bounds, { padding: [100, 100] });
+  const bounds = new google.maps.LatLngBounds();
+  route.stops.forEach(stop => {
+    bounds.extend({ lat: stop.lat, lng: stop.lng });
+  });
+  map.fitBounds(bounds, { top: 100, right: 100, bottom: 100, left: 100 });
 }
+</script>
 
-// Initialize
-document.addEventListener('DOMContentLoaded', () => {
-  initMap();
-  loadData();
-});
+<!-- Google Maps API -->
+<script async defer
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg&callback=initMap&language=ko&region=KR">
 </script>
 
 </body>

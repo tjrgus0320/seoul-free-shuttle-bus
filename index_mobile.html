@@ -7,7 +7,6 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>서울 무료 셔틀버스</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -546,18 +545,22 @@
       to { transform: rotate(360deg); }
     }
 
-    /* Leaflet Custom */
-    .leaflet-control-zoom {
-      display: none !important;
+    /* Google Maps Custom InfoWindow */
+    .gm-style-iw {
+      padding: 0 !important;
     }
 
-    .leaflet-popup-content-wrapper {
-      border-radius: var(--radius-md);
-      box-shadow: var(--shadow-lg);
+    .gm-style-iw-c {
+      border-radius: var(--radius-md) !important;
+      box-shadow: var(--shadow-lg) !important;
     }
 
-    .leaflet-popup-content {
-      margin: 10px 12px;
+    .gm-style-iw-d {
+      overflow: hidden !important;
+    }
+
+    .popup-content {
+      padding: 10px 12px;
       font-family: 'Pretendard', sans-serif;
     }
 
@@ -650,11 +653,12 @@
   </div>
 </div>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 // Global State
 let map;
-let layers = [];
+let markers = [];
+let polylines = [];
+let infoWindow;
 let shuttleData = null;
 let activeDistrict = null;
 let activeRoute = null;
@@ -691,14 +695,21 @@ function toggleSheet() {
 
 // Initialize Map
 function initMap() {
-  map = L.map('map', {
+  map = new google.maps.Map(document.getElementById('map'), {
+    center: { lat: 37.5665, lng: 126.9780 },
+    zoom: 11,
+    styles: [
+      { featureType: 'poi', stylers: [{ visibility: 'simplified' }] },
+      { featureType: 'transit', stylers: [{ visibility: 'simplified' }] }
+    ],
+    mapTypeControl: false,
+    streetViewControl: false,
+    fullscreenControl: false,
     zoomControl: false,
-    attributionControl: false
-  }).setView([37.5665, 126.9780], 11);
+    gestureHandling: 'greedy'
+  });
 
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-    maxZoom: 19
-  }).addTo(map);
+  infoWindow = new google.maps.InfoWindow();
 
   // Touch handling for bottom sheet
   let startY = 0;
@@ -719,6 +730,20 @@ function initMap() {
       toggleSheet();
     }
   }, { passive: true });
+
+  loadData();
+}
+
+// Create Circle Marker Icon
+function createMarkerIcon(color, size) {
+  return {
+    path: google.maps.SymbolPath.CIRCLE,
+    fillColor: color,
+    fillOpacity: 1,
+    strokeColor: '#ffffff',
+    strokeWeight: 2,
+    scale: size
+  };
 }
 
 // Load Data
@@ -831,68 +856,77 @@ function renderRoutes(district) {
   container.innerHTML = html;
 }
 
+// Clear Map Layers
+function clearMapLayers() {
+  markers.forEach(marker => marker.setMap(null));
+  markers = [];
+  polylines.forEach(polyline => polyline.setMap(null));
+  polylines = [];
+  infoWindow.close();
+}
+
 // Show Routes on Map
 function showRoutesOnMap(district) {
-  // Clear layers
-  layers.forEach(layer => map.removeLayer(layer));
-  layers = [];
+  clearMapLayers();
 
-  const bounds = L.latLngBounds();
+  const bounds = new google.maps.LatLngBounds();
 
   district.routes.forEach((route, routeIdx) => {
     const color = COLORS[routeIdx % COLORS.length];
-    const coords = route.stops.map(s => [s.lat, s.lng]);
+    const path = [];
 
-    // Markers
+    // Create markers for each stop
     route.stops.forEach((stop, stopIdx) => {
       let markerColor = color;
-      let size = 12;
+      let size = 6;
 
       if (stopIdx === 0) {
         markerColor = '#10b981';
-        size = 14;
+        size = 8;
       } else if (stopIdx === route.stops.length - 1) {
         markerColor = '#f97316';
-        size = 14;
+        size = 8;
       }
 
-      const icon = L.divIcon({
-        className: 'custom-marker',
-        html: `<div style="
-          width: ${size}px;
-          height: ${size}px;
-          background: ${markerColor};
-          border-radius: 50%;
-          border: 2px solid white;
-          box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-        "></div>`,
-        iconSize: [size, size],
-        iconAnchor: [size/2, size/2]
+      const position = { lat: stop.lat, lng: stop.lng };
+      path.push(position);
+
+      const marker = new google.maps.Marker({
+        position: position,
+        map: map,
+        icon: createMarkerIcon(markerColor, size),
+        title: stop.name
       });
 
-      const marker = L.marker([stop.lat, stop.lng], { icon })
-        .addTo(map)
-        .bindPopup(`
-          <div class="popup-title">${stop.name}</div>
-          <div class="popup-route">${route.name}</div>
+      marker.addListener('click', () => {
+        infoWindow.setContent(`
+          <div class="popup-content">
+            <div class="popup-title">${stop.name}</div>
+            <div class="popup-route">${route.name}</div>
+          </div>
         `);
+        infoWindow.open(map, marker);
+      });
 
-      layers.push(marker);
-      bounds.extend([stop.lat, stop.lng]);
+      markers.push(marker);
+      bounds.extend(position);
     });
 
-    // Route line
-    const polyline = L.polyline(coords, {
-      color: color,
-      weight: 4,
-      opacity: 0.8
-    }).addTo(map);
+    // Create route polyline
+    const polyline = new google.maps.Polyline({
+      path: path,
+      geodesic: true,
+      strokeColor: color,
+      strokeOpacity: 0.8,
+      strokeWeight: 4
+    });
 
-    layers.push(polyline);
+    polyline.setMap(map);
+    polylines.push(polyline);
   });
 
-  if (bounds.isValid()) {
-    map.fitBounds(bounds, { padding: [60, 60] });
+  if (!bounds.isEmpty()) {
+    map.fitBounds(bounds, { top: 120, right: 20, bottom: 200, left: 20 });
   }
 }
 
@@ -910,9 +944,11 @@ function focusRoute(districtName, routeIdx) {
   });
 
   // Fit to route
-  const coords = route.stops.map(s => [s.lat, s.lng]);
-  const bounds = L.latLngBounds(coords);
-  map.fitBounds(bounds, { padding: [80, 80] });
+  const bounds = new google.maps.LatLngBounds();
+  route.stops.forEach(stop => {
+    bounds.extend({ lat: stop.lat, lng: stop.lng });
+  });
+  map.fitBounds(bounds, { top: 100, right: 50, bottom: 200, left: 50 });
 
   // Collapse sheet for better map view
   if (sheetExpanded) {
@@ -934,27 +970,28 @@ function locateMe() {
   navigator.geolocation.getCurrentPosition(
     (position) => {
       const { latitude, longitude } = position.coords;
+      const userPosition = { lat: latitude, lng: longitude };
 
       if (userMarker) {
-        map.removeLayer(userMarker);
+        userMarker.setMap(null);
       }
 
-      const icon = L.divIcon({
-        className: 'user-marker',
-        html: `<div style="
-          width: 20px;
-          height: 20px;
-          background: var(--primary);
-          border-radius: 50%;
-          border: 4px solid white;
-          box-shadow: 0 0 0 2px var(--primary), 0 4px 12px rgba(37,99,235,0.4);
-        "></div>`,
-        iconSize: [20, 20],
-        iconAnchor: [10, 10]
+      userMarker = new google.maps.Marker({
+        position: userPosition,
+        map: map,
+        icon: {
+          path: google.maps.SymbolPath.CIRCLE,
+          fillColor: '#2563eb',
+          fillOpacity: 1,
+          strokeColor: '#ffffff',
+          strokeWeight: 4,
+          scale: 10
+        },
+        title: '내 위치'
       });
 
-      userMarker = L.marker([latitude, longitude], { icon }).addTo(map);
-      map.setView([latitude, longitude], 15);
+      map.setCenter(userPosition);
+      map.setZoom(15);
 
       // Find nearest district
       findNearestDistrict(latitude, longitude);
@@ -995,13 +1032,9 @@ function findNearestDistrict(lat, lng) {
     showDistrict(nearest);
   }
 }
-
-// Initialize
-document.addEventListener('DOMContentLoaded', () => {
-  initMap();
-  loadData();
-});
 </script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg&callback=initMap&language=ko&region=KR" async defer></script>
 
 </body>
 </html>
