@@ -545,35 +545,25 @@
       to { transform: rotate(360deg); }
     }
 
-    /* Google Maps Custom InfoWindow */
-    .gm-style-iw {
-      padding: 0 !important;
-    }
-
-    .gm-style-iw-c {
-      border-radius: var(--radius-md) !important;
-      box-shadow: var(--shadow-lg) !important;
-    }
-
-    .gm-style-iw-d {
-      overflow: hidden !important;
-    }
-
-    .popup-content {
-      padding: 10px 12px;
+    /* Kakao Map Custom InfoWindow */
+    .kakao-info-window {
+      padding: 10px 14px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
       font-family: 'Pretendard', sans-serif;
     }
 
-    .popup-title {
+    .kakao-info-window .title {
       font-weight: 600;
-      font-size: 0.9rem;
-      color: var(--text-primary);
+      font-size: 14px;
+      color: #0f172a;
+      margin-bottom: 4px;
     }
 
-    .popup-route {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      margin-top: 2px;
+    .kakao-info-window .route {
+      font-size: 12px;
+      color: #64748b;
     }
   </style>
 </head>
@@ -653,12 +643,15 @@
   </div>
 </div>
 
+<!-- Kakao Maps API -->
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=YOUR_KAKAO_APP_KEY&libraries=services"></script>
+
 <script>
 // Global State
 let map;
 let markers = [];
 let polylines = [];
-let infoWindow;
+let overlays = [];
 let shuttleData = null;
 let activeDistrict = null;
 let activeRoute = null;
@@ -693,23 +686,15 @@ function toggleSheet() {
   sheet.classList.toggle('expanded', sheetExpanded);
 }
 
-// Initialize Map
+// Initialize Kakao Map
 function initMap() {
-  map = new google.maps.Map(document.getElementById('map'), {
-    center: { lat: 37.5665, lng: 126.9780 },
-    zoom: 11,
-    styles: [
-      { featureType: 'poi', stylers: [{ visibility: 'simplified' }] },
-      { featureType: 'transit', stylers: [{ visibility: 'simplified' }] }
-    ],
-    mapTypeControl: false,
-    streetViewControl: false,
-    fullscreenControl: false,
-    zoomControl: false,
-    gestureHandling: 'greedy'
-  });
+  const container = document.getElementById('map');
+  const options = {
+    center: new kakao.maps.LatLng(37.5665, 126.9780),
+    level: 8
+  };
 
-  infoWindow = new google.maps.InfoWindow();
+  map = new kakao.maps.Map(container, options);
 
   // Touch handling for bottom sheet
   let startY = 0;
@@ -732,18 +717,6 @@ function initMap() {
   }, { passive: true });
 
   loadData();
-}
-
-// Create Circle Marker Icon
-function createMarkerIcon(color, size) {
-  return {
-    path: google.maps.SymbolPath.CIRCLE,
-    fillColor: color,
-    fillOpacity: 1,
-    strokeColor: '#ffffff',
-    strokeWeight: 2,
-    scale: size
-  };
 }
 
 // Load Data
@@ -862,14 +835,29 @@ function clearMapLayers() {
   markers = [];
   polylines.forEach(polyline => polyline.setMap(null));
   polylines = [];
-  infoWindow.close();
+  overlays.forEach(overlay => overlay.setMap(null));
+  overlays = [];
+}
+
+// Create Circle Marker for Kakao Maps
+function createCircleMarker(position, color, size, map) {
+  return new kakao.maps.Circle({
+    center: position,
+    radius: size,
+    strokeWeight: 2,
+    strokeColor: '#ffffff',
+    strokeOpacity: 1,
+    fillColor: color,
+    fillOpacity: 1,
+    map: map
+  });
 }
 
 // Show Routes on Map
 function showRoutesOnMap(district) {
   clearMapLayers();
 
-  const bounds = new google.maps.LatLngBounds();
+  const bounds = new kakao.maps.LatLngBounds();
 
   district.routes.forEach((route, routeIdx) => {
     const color = COLORS[routeIdx % COLORS.length];
@@ -877,57 +865,93 @@ function showRoutesOnMap(district) {
 
     // Create markers for each stop
     route.stops.forEach((stop, stopIdx) => {
+      const position = new kakao.maps.LatLng(stop.lat, stop.lng);
+      path.push(position);
+      bounds.extend(position);
+
       let markerColor = color;
-      let size = 6;
+      let markerSize = 12;
 
       if (stopIdx === 0) {
         markerColor = '#10b981';
-        size = 8;
+        markerSize = 16;
       } else if (stopIdx === route.stops.length - 1) {
         markerColor = '#f97316';
-        size = 8;
+        markerSize = 16;
       }
 
-      const position = { lat: stop.lat, lng: stop.lng };
-      path.push(position);
+      // Create circle marker
+      const circle = createCircleMarker(position, markerColor, markerSize, map);
+      markers.push(circle);
 
-      const marker = new google.maps.Marker({
+      // Create custom overlay for marker (clickable)
+      const markerElement = document.createElement('div');
+      markerElement.style.cssText = `
+        width: ${markerSize * 2}px;
+        height: ${markerSize * 2}px;
+        border-radius: 50%;
+        cursor: pointer;
+        position: relative;
+        transform: translate(-50%, -50%);
+      `;
+
+      const customOverlay = new kakao.maps.CustomOverlay({
         position: position,
-        map: map,
-        icon: createMarkerIcon(markerColor, size),
-        title: stop.name
+        content: markerElement,
+        yAnchor: 0.5,
+        xAnchor: 0.5
       });
+      customOverlay.setMap(map);
+      overlays.push(customOverlay);
 
-      marker.addListener('click', () => {
-        infoWindow.setContent(`
-          <div class="popup-content">
-            <div class="popup-title">${stop.name}</div>
-            <div class="popup-route">${route.name}</div>
-          </div>
-        `);
-        infoWindow.open(map, marker);
-      });
+      // Info window content
+      const infoContent = `
+        <div class="kakao-info-window">
+          <div class="title">${stop.name}</div>
+          <div class="route">${route.name}</div>
+        </div>
+      `;
 
-      markers.push(marker);
-      bounds.extend(position);
+      // Click event for info window
+      markerElement.onclick = () => {
+        // Close existing info windows
+        overlays.forEach(o => {
+          if (o.infoOverlay) {
+            o.infoOverlay.setMap(null);
+          }
+        });
+
+        const infoOverlay = new kakao.maps.CustomOverlay({
+          position: position,
+          content: infoContent,
+          yAnchor: 1.5,
+          xAnchor: 0.5
+        });
+        infoOverlay.setMap(map);
+        customOverlay.infoOverlay = infoOverlay;
+
+        // Auto close after 3 seconds
+        setTimeout(() => {
+          infoOverlay.setMap(null);
+        }, 3000);
+      };
     });
 
     // Create route polyline
-    const polyline = new google.maps.Polyline({
+    const polyline = new kakao.maps.Polyline({
       path: path,
-      geodesic: true,
+      strokeWeight: 4,
       strokeColor: color,
       strokeOpacity: 0.8,
-      strokeWeight: 4
+      strokeStyle: 'solid',
+      map: map
     });
 
-    polyline.setMap(map);
     polylines.push(polyline);
   });
 
-  if (!bounds.isEmpty()) {
-    map.fitBounds(bounds, { top: 120, right: 20, bottom: 200, left: 20 });
-  }
+  // Fit map to bounds
+  map.setBounds(bounds);
 }
 
 // Focus Route
@@ -944,11 +968,11 @@ function focusRoute(districtName, routeIdx) {
   });
 
   // Fit to route
-  const bounds = new google.maps.LatLngBounds();
+  const bounds = new kakao.maps.LatLngBounds();
   route.stops.forEach(stop => {
-    bounds.extend({ lat: stop.lat, lng: stop.lng });
+    bounds.extend(new kakao.maps.LatLng(stop.lat, stop.lng));
   });
-  map.fitBounds(bounds, { top: 100, right: 50, bottom: 200, left: 50 });
+  map.setBounds(bounds);
 
   // Collapse sheet for better map view
   if (sheetExpanded) {
@@ -970,28 +994,26 @@ function locateMe() {
   navigator.geolocation.getCurrentPosition(
     (position) => {
       const { latitude, longitude } = position.coords;
-      const userPosition = { lat: latitude, lng: longitude };
+      const userPosition = new kakao.maps.LatLng(latitude, longitude);
 
       if (userMarker) {
         userMarker.setMap(null);
       }
 
-      userMarker = new google.maps.Marker({
-        position: userPosition,
-        map: map,
-        icon: {
-          path: google.maps.SymbolPath.CIRCLE,
-          fillColor: '#2563eb',
-          fillOpacity: 1,
-          strokeColor: '#ffffff',
-          strokeWeight: 4,
-          scale: 10
-        },
-        title: '내 위치'
+      // Create user marker
+      userMarker = new kakao.maps.Circle({
+        center: userPosition,
+        radius: 20,
+        strokeWeight: 4,
+        strokeColor: '#ffffff',
+        strokeOpacity: 1,
+        fillColor: '#2563eb',
+        fillOpacity: 1,
+        map: map
       });
 
       map.setCenter(userPosition);
-      map.setZoom(15);
+      map.setLevel(4);
 
       // Find nearest district
       findNearestDistrict(latitude, longitude);
@@ -1032,9 +1054,30 @@ function findNearestDistrict(lat, lng) {
     showDistrict(nearest);
   }
 }
-</script>
 
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg&callback=initMap&language=ko&region=KR" async defer></script>
+// Initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+  // Check if Kakao Maps is loaded
+  if (typeof kakao !== 'undefined' && kakao.maps) {
+    initMap();
+  } else {
+    // Show error message if API key is missing
+    document.getElementById('map').innerHTML = `
+      <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; background: #f8fafc; padding: 40px; text-align: center;">
+        <div style="font-size: 48px; margin-bottom: 20px;">🗺️</div>
+        <h3 style="color: #0f172a; margin-bottom: 10px;">Kakao Maps API 키 필요</h3>
+        <p style="color: #64748b; max-width: 300px; line-height: 1.6; font-size: 14px;">
+          지도를 사용하려면 Kakao Developers에서 JavaScript API 키를 발급받아야 합니다.
+          <br><br>
+          <a href="https://developers.kakao.com/" target="_blank" style="color: #2563eb;">Kakao Developers 바로가기</a>
+        </p>
+      </div>
+    `;
+    // Still load data for the bottom sheet
+    loadData();
+  }
+});
+</script>
 
 </body>
 </html>
